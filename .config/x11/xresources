@@ -1,0 +1,17 @@
+!#urxvt.cursorBlink= false
+
+!======sxiv=============
+Sxiv.background: #222222
+Sxiv.foregroung: #bbbbbb
+
+!!no estoy seguro de lo que hace esto, si afecta a otros programas y en tal caso no se de forma, si hay fallo (primero mirar aqui)
+!!*foreground: rgb:e5/e5/e5
+!!*background: rgb:00/00/00
+
+!==== urxvt =========
+!#include ".config/x11/urxvt"
+
+!=== pywall ========
+!!#include ".cache/wal/colors.Xresources"
+!#include ".config/xcolors/"
+!Xcursor.size:10

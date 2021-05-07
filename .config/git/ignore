@@ -1,0 +1,15 @@
+apis/
+*.o
+*.swp
+*.so
+*.log
+*~
+*.db
+*.gpg
+*.asc
+.ssh/
+*.orig
+*.rej
+*.exe
+*.apk
+.uuid

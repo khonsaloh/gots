@@ -1,0 +1,11 @@
+#!/bin/sh
+
+#detectar interfaz inalábrica
+broad=$(sudo ifconfig $(/usr/bin/ls /sys/class/net | grep '^wl') |
+	grep broadcast|rev | cut -d' ' -f1 | rev | cut -d'.' -f1,2,3)
+
+for ip in $(seq 1 255); do
+	    /usr/bin/ping -c 1 $broad.$ip | grep "bytes from" &
+done
+
+sudo arp | grep ether

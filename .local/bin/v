@@ -1,0 +1,25 @@
+#!/bin/sh
+
+if [ -z "$1" ]; then
+	b=$(stat -c %U .)
+	#case $b in
+	#	"$(echo $USER)") /usr/bin/vim -i NONE -u ~/.config/vim2/vimrc1 "$b";;
+	#	"root") sudo vim "$b" ;;
+	#	"txt") vim "$b" ;;
+	#esac
+else
+	if [ -f "$1" ]; then
+		a=$(stat -c %U $1)
+		b=$1
+		case $a in
+			"root") sudo vim "$b" ;;
+			*) /usr/bin/vim -i NONE "$b" ;;
+		esac
+	else
+		a=$(stat -c %U .)
+		case $a in
+			"root") sudo vim "$1" ;;
+			*) vim -i NONE "$1" ;;
+		esac
+	fi
+fi

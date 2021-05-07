@@ -1,0 +1,67 @@
+#!/usr/bin/python3
+
+from sys import argv
+
+if len(argv) > 1:
+    None
+else:
+    palabra = input(' pon palabra a buscar: ')
+
+    from requests import get
+    from bs4 import BeautifulSoup as soup
+    from pydoc import pager
+    from re import sub
+
+    headers = {
+    	'User-Agent': 'Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101 Firefox/68.0'
+    }
+    url = 'https://dle.rae.es/'
+
+    termino = url + palabra
+    peticion = get(termino, headers=headers)
+    criba = soup(peticion.content, 'html.parser')
+    resultado = criba.find('div', {'id' : 'resultados'})
+
+    a = resultado.text 
+    text = "\n".join([ll.rstrip() for ll in a.splitlines() if ll.strip()])
+    sust = sub("Real Academia Española © Todos los derechos reservados", '', text)
+    pager(sust)
+    exit()
+#import sys
+
+#import requests
+from requests import get
+from bs4 import BeautifulSoup as soup
+
+# paginador
+from pydoc import pager
+from re import sub
+#from time import sleep
+
+headers = {
+	'User-Agent': 'Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101 Firefox/68.0'
+}
+url = 'https://dle.rae.es/'
+
+#termino = url + sys.argv[1]
+#termino = url + argv[1]
+
+termino = url + argv[1]
+#peticion = requests.get(termino, headers=headers)
+peticion = get(termino, headers=headers)
+
+#print(peticion)
+
+criba = soup(peticion.content, 'html.parser')
+
+#resultado = criba.find('div', {'class' : 'trans'})
+resultado = criba.find('div', {'id' : 'resultados'})
+
+a = resultado.text 
+
+# regex para eliminar lineas en blanco
+text = "\n".join([ll.rstrip() for ll in a.splitlines() if ll.strip()])
+#print(text)
+sust = sub("Real Academia Española © Todos los derechos reservados", '', text)
+#paginador en caso de la salida sobresalga la pantalla
+pager(sust)

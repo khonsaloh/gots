@@ -1,0 +1,4 @@
+#!/bin/sh
+/usr/bin/ping -4 -q -c 1 example.org > /dev/null || /usr/bin/ping -4 -q -c 1 google.com > /dev/null || exit
+pidof -q newsboat && killall newsboat 2>/dev/null
+newsboat -x reload &&  notify-send -i /usr/share/icons/papir*/24x24/categories/liferea.png "rss actualizado"

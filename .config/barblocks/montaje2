@@ -1,0 +1,12 @@
+#!/bin/sh
+
+a=$(/usr/bin/lsblk -pnl | grep part | xmenu | awk '{print $7, $1}')
+#b=$(/usr/bin/lsblk -pnl | fzf | awk '{print $1}')
+b=$(printf "$a\\n" | awk '{print $2}')
+c=/mnt
+d=/media/usb2/
+case $b in
+	"") sudo mount $a /media/usb && notify-send "unidad $a montada";;
+	*) sudo umount $b && notify-send "$b unidad desmontada";;
+esac
+

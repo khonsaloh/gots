@@ -1,0 +1,21 @@
+#!/bin/sh
+
+cat <<EOF | xmenu | sh &
+Aplicaciones
+	IMG:./icons/web.png	Navegador	firefox
+	IMG:./icons/gimp.png	Torrentes	st -e rtorrent
+	IMG:./icons		Wireshark	wireshark
+	IMG:./icons		Quemador disco	st -e cdw
+	IMG:./icons		Recuperacion forense	st -e sudo testdisk
+	IMG:./icons		Cortafuegos	$HOME/scripts/seguridad	
+Color			color
+Montar/Desmontar	$HOME/.config/barblocks/montaje2
+lf			$HOME/scripts/st-0.8.4-prueba/st -e lf
+
+Cerrar session		kill -9 -1
+Apagar			sudo poweroff
+Apagado programado	$HOME/.config/barblocks/temporizador	a los 30 mim
+Reiniciar		sudo reboot
+EOF
+
+

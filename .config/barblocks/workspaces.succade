@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# workspaces module
+
+workspaces () {
+	WORKSPACES=`bspc query -D --names`
+	FOCUSED_WORKSPACE=`bspc query -D --names -d focused`
+
+	for WORKSPACE in $WORKSPACES; do
+		if [ ! -z `bspc query -N -d $WORKSPACE | awk 'FNR==1 {print}'` ] || [ $WORKSPACE = $FOCUSED_WORKSPACE ] ; then
+			if [ $WORKSPACE = $FOCUSED_WORKSPACE ]; then
+				printf "%s\n" "%{B#FDFD00}  $WORKSPACE  %{B-}" | tr '\n' ' '
+			else
+				printf "%s\n" "%{B#005FD7}  $WORKSPACE  %{B-}" | tr '\n' ' '
+			fi
+		else
+			printf "%s" ""
+		fi
+	done	
+}
+
+printf "%s\n" "$(workspaces)"

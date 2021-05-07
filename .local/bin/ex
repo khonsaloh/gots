@@ -1,0 +1,59 @@
+#!/bin/sh
+
+esto="$1"
+esto2="$2"
+
+eso() {
+    case $esto in
+      *.tar.bz2)  tar xjf "$esto"    ;;
+      *.tar.gz) tar xzf "$esto"    ;;
+      *.bz2)    bunzip2 "$esto"    ;;
+      #*.rar)    rar x $1    ;;
+      *.gz)   gunzip "$esto"   ;;
+      *.tar)    tar xf "$esto"   ;;
+      *.tbz2)   tar xjf "$esto"    ;;
+      *.tgz)    tar xzf "$esto"    ;;
+      *.zip)    unzip "$esto"    ;;
+      *.Z)    uncompress "$esto" ;;
+      *.lzma) unlzma "$esto" ;;
+      *.xz) unxz "$esto" ;;
+      -sfs) unsquashfs -f -d "$esto2" .;;
+      *.sfs) unsquashfs -f -d "$esto2" .;;
+      *.sqfs) unsquashfs -f -d "$esto2" .;;
+      *.rpm) tar xvf "$esto".rpm ;;
+      *.deb) dpkg -x "$esto" "$esto.ex";;
+      *.img) zcat "$esto" | cpio idmv ;;
+      *.rar) printf "instala unrar (formato propietario)\\n";;
+      *)      echo "'$esto' no se puede extraer por este metodo" ;;
+    esac
+}
+
+[ -n "$1" ] && eso
+
+ello() {
+    case $a in
+      *.tar.bz2)  tar xjf "$a"    ;;
+      *.tar.gz) tar xzf "$a"    ;;
+      *.bz2)    bunzip2 "$a"    ;;
+      #*.rar)    rar x $1    ;;
+      *.gz)   gunzip "$a"   ;;
+      *.tar)    tar xf "$a"   ;;
+      *.tbz2)   tar xjf "$a"    ;;
+      *.tgz)    tar xzf "$a"    ;;
+      *.zip)    unzip "$a"    ;;
+      *.Z)    uncompress "$a" ;;
+      *.lzma) unlzma "$a" ;;
+      *.xz) unxz "$a" ;;
+      -sfs) unsquashfs -f -d "$a" .;;
+      *.sfs) unsquashfs -f -d "$a" .;;
+      *.sqfs) unsquashfs -f -d "$a" .;;
+      *.rpm) tar xvf "$a".rpm ;;
+      *.deb) dpkg -x "$a" "$a.ex";;
+      *.img) zcat "$a" | cpio idmv ;;
+      *.rar) printf "instala unrar (formato propietario)\\n";;
+      *)      echo "'$a' no se puede extraer por este metodo" ;;
+    esac
+}
+
+[ -z "$@" ] && a=$(find  . -type f | fzf --reverse --cycle) || exit 1 && ello
+

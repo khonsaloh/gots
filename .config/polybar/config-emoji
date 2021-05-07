@@ -1,0 +1,531 @@
+;pruebas
+
+[colors]
+;background = ${xrdb:color0:#222}
+; color primario de fondo de la barra
+; para dar transparencia añade dos digitos de alpha
+background = #222
+; color secundario de fondo
+background-alt = #444
+;foreground = ${xrdb:color7:#222}
+; color primario de letras y simbolos
+foreground = #dfdfdf
+; color de letras y simbolos (prefijos a no ser que se especifique un color en su modulo)
+;foreground-alt = #555
+foreground-alt = #ffffff
+
+primary = #ffb52a
+secondary = #e60053
+alert = #bd2c40
+
+;para colocar separadores en la barra
+;separator = |
+
+[modules/xmenu]
+menu-0 = item 1;command
+menu-0-0 = sub-item 1.1;command
+menu-0-1 = sub-item 1.2;command
+menu-0-2 = sub-item 1.3;command
+menu-1 = item 2;command
+menu-1-0 = sub-item 2.1;command
+menu-1-1 = sub-item 2.2;command
+
+[bar/statbar]
+;monitor = ${env:MONITOR:HDMI-1}
+;largo de la barra en porcentaje
+width = 100%
+;alto de la barra
+height = 27
+; separacion con respecto al eje de la x
+offset-x = 0
+; separacion con respecta al eje de la y
+offset-y = 0
+; radio para la redondez de los bordes de la barra
+radius = 0.0
+; booleano 
+fixed-center = false
+
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+; grosor de la linea en cada modulo 
+line-size = 3
+; color de la linea en general a no ser que en el modulo correspondiente se defina otro color
+;line-color = #f00
+line-color = #67530b
+
+;margen de separacion de la barra con respecto a los bordes de la pantalla
+border-size = 0
+; color de este margen
+;border-color = #ffffff
+
+#margen bloque (seccion de la barra) izquierdo o derecho
+padding-left = 5
+padding-right = 1
+
+; separacion de los modulos con respecto a la izquierda
+module-margin-left = 1
+; separacion de los modulos con respecto a la derecha
+module-margin-right = 2
+
+
+;el segundo valor del pixelsize hace referencia a la separacion del borde el primero al tanaño de la fuente
+#font-0 = fixed:pixelsize=10;1
+#font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
+#font-2 = sijifont:
+font-0 = HackNerdFont:pixelsize=10;1
+;font-0 = BitstreamVeraSans:pixelsize=10;1
+;font-1 = NotoColorEmoji:size=3:1
+;font-1 = NotoColorEmoji:fontformat=truetype:pixelsize=11,2:scale=10:antialias=false;
+font-1 = NotoColorEmoji:fontformat=truetype:scale=10:antialias=false;
+
+;secciones de la barra
+modules-left = bspwm 
+;modules-center = xwindow
+modules-right = checknetwork menu volumen weather correo paquetes cpu memory red battery temperature hora 
+;modules-right = cpu   
+
+; posicion de la bandeja de sistema
+;tray-position = right
+tray-position = none
+tray-padding = 2
+
+;tray-transparent = true
+;tray-background = #0063ff
+
+wm-restack = bspwm
+
+enable-ipc = true
+;override-redirect = true
+
+;scroll-up = bspwm-desknext
+;scroll-down = bspwm-deskprev
+
+[module/alsa]
+type = internal/alsa
+format-volume = <ramp-volume> <label-volume>
+format-muted =  0%
+ramp-volume-0 = 
+ramp-volume-1 = 
+ramp-volume-2 = 
+click-left = st -e alsamixer &
+ramp-volume-foreground = ${colors.primary}
+
+
+[module/xwindow]
+;type = internal/xwindow
+;label = %title:0:30:...%
+
+;format-prefix = " "
+;format-prefix-foreground = ${colors.foreground-alt}
+;format-prefix-underline = ${colors.secondary}
+
+;label-layout = %layout%
+;label-layout-underline = ${colors.secondary}
+
+;label-indicator-padding = 2
+;label-indicator-margin = 1
+;label-indicator-background = ${colors.secondary}
+;label-indicator-underline = ${colors.secondary}
+
+;[module/filesystem]
+;type = internal/fs
+;interval = 25
+
+;mount-0 = /
+
+;label-mounted = %{F#0a81f5}%mountpoint%%{F-}: %percentage_used%%
+;label-unmounted = %mountpoint% not mounted
+;label-unmounted-foreground = ${colors.foreground-alt}
+
+[module/bspwm]
+type = internal/bspwm
+
+;label-focused = %icon%
+label-focused = %index%
+label-focused-background = ${colors.background-alt}
+;label-focused-underline= ${colors.primary}
+label-focused-padding = 2
+
+label-occupied = %index%
+label-occupied-padding = 2
+
+label-urgent = %index%!
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 2
+
+;label-empty = %index%
+label-empty = 
+label-empty-foreground = "#696969"
+label-empty-padding = 2
+
+ws-icon-0 = 1:
+;ws-icon-1 = 2:
+;ws-icon-2 = 3:
+
+;[module/mpd]
+;type = internal/mpd
+;format-online = <label-song>  <icon-prev> <icon-stop> <toggle> <icon-next>
+
+;icon-prev = 
+;icon-stop = 
+;icon-play = 
+;icon-pause = 
+;icon-next = 
+
+;label-song-maxlen = 25
+;label-song-ellipsis = true
+
+[module/xbacklight]
+type = internal/xbacklight
+
+format = <label> <bar>
+label = BL
+
+bar-width = 10
+bar-indicator = |
+bar-indicator-foreground = #ff
+bar-indicator-font = 2
+bar-fill = ─
+bar-fill-font = 2
+bar-fill-foreground = #9f78e1
+bar-empty = ─
+bar-empty-font = 2
+bar-empty-foreground = ${colors.foreground-alt}
+
+[module/backlight-acpi]
+inherit = module/xbacklight
+type = internal/backlight
+card = intel_backlight
+
+[module/cpu]
+type = internal/cpu
+interval = 2
+format-prefix = "🖥️ "
+;format-prefix-foreground = ${colors.foreground-alt}
+;format-prefix-foreground = #96720d
+;format-underline = #f90000
+;format-underline = #8A8383
+label = %percentage%%
+
+[module/memory]
+type = internal/memory
+interval = 2
+format-prefix = "🧠 "
+;format-prefix = " "
+;format-prefix-foreground = ${colors.foreground-alt}
+;format-prefix-foreground = #96720d
+;format-foreground = #d89517
+;format-underline = #67530b
+label = %percentage_used%%
+
+[module/wlan]
+type = internal/network
+interface = wlan0
+interval = 10
+format-prefix = "﬉ "
+;click-left = "ip addr | grep 192 || st -e printf 'no hay acceso\\n'" && sleep 10
+
+format-connected = ﬉ wlan0 
+format-connected-underline = #8A8383
+;label-connected = %essid%
+
+;format-disconnected =
+format-disconnected = <label-disconnected>
+format-disconnected-underline = ${self.format-connected-underline}
+label-disconnected = %ifname% disconnected
+label-disconnected-foreground = ${colors.foreground-alt}
+
+;ramp-signal-0 = 
+;ramp-signal-1 = 
+;ramp-signal-2 = 
+;ramp-signal-3 = 
+;ramp-signal-4 = 
+;ramp-signal-foreground = ${colors.foreground-alt}
+
+;[module/eth]
+;type = internal/network
+;interface = net0
+;interval = 3.0
+
+;format-connected-underline = #55aa55
+;format-connected-prefix = " "
+;format-connected-prefix-foreground = ${colors.foreground-alt}
+;label-connected = %local_ip%
+
+;format-disconnected =
+;format-disconnected = <label-disconnected>
+;format-disconnected-underline = ${self.format-connected-underline}
+;label-disconnected = %ifname% disconnected
+;label-disconnected-foreground = ${colors.foreground-alt}
+
+[module/date]
+type = internal/date
+interval = 120
+
+date =
+date-alt = " %d-%m-%Y"
+
+time = %H:%M
+time-alt = %H:%M
+
+format-prefix = " "
+;format-prefix-foreground = ${colors.foreground-alt}
+format-prefix-foreground = #846702
+format-underline = #8A8383
+
+label = %date% %time%
+
+;[module/volume]
+;type = internal/volume
+
+;format-volume = <label-volume> <bar-volume>
+;format-volume = <label-volume>
+;label-volume = V
+;label-volume-foreground = ${root.foreground}
+
+;format-muted-prefix = " "
+;format-muted-foreground = ${colors.foreground-alt}
+;label-muted = sound muted
+
+;bar-volume-width = 10
+;bar-volume-foreground-0 = #55aa55
+;bar-volume-foreground-1 = #55aa55
+;bar-volume-foreground-2 = #55aa55
+;bar-volume-foreground-3 = #55aa55
+;bar-volume-foreground-4 = #55aa55
+;bar-volume-foreground-5 = #f5a70a
+;bar-volume-foreground-6 = #ff5555
+;bar-volume-gradient = false
+;bar-volume-indicator = |
+;bar-volume-indicator-font = 2
+;bar-volume-fill = ─
+;bar-volume-fill-font = 2
+;bar-volume-empty = ─
+;bar-volume-empty-font = 2
+;bar-volume-empty-foreground = ${colors.foreground-alt}
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = ADP1
+full-at = 98
+
+format-charging = <animation-charging> <label-charging>
+format-charging-underline = #ffb52a
+
+format-discharging = <ramp-capacity> <label-discharging>
+format-discharging-underline = ${self.format-charging-underline}
+
+format-full-prefix = " "
+format-full-prefix-foreground = ${colors.foreground-alt}
+format-full-underline = ${self.format-charging-underline}
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-foreground = ${colors.foreground-alt}
+
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-foreground = ${colors.foreground-alt}
+animation-charging-framerate = 750
+
+[module/temperature]
+type = internal/temperature
+thermal-zone = 0
+warn-temperature = 60
+
+format = <ramp> <label>
+;format-underline = #8A8383
+format-warn = <ramp> <label-warn>
+;format-warn-underline = ${self.format-underline}
+
+label = %temperature-c%
+label-warn = %temperature-c%
+label-warn-foreground = ${colors.secondary}
+
+ramp-0 = 🌡️
+ramp-1 = 🌡️
+ramp-2 = 🌡️
+ramp-foreground = ${colors.foreground-alt}
+
+;[module/powermenu]
+;type = custom/menu
+
+;format-spacing = 1
+
+;label-open = 
+;label-open-foreground = ${colors.secondary}
+;label-close =  cancel
+;label-close-foreground = ${colors.secondary}
+;label-separator = |
+;label-separator-foreground = ${colors.foreground-alt}
+
+;menu-0-0 = reboot
+;menu-0-0-exec = menu-open-1
+;menu-0-1 = power off
+;menu-0-1-exec = menu-open-2
+
+;menu-1-0 = cancel
+;menu-1-0-exec = menu-open-0
+;menu-1-1 = reboot
+;menu-1-1-exec = sudo reboot
+
+;menu-2-0 = power off
+;menu-2-0-exec = sudo poweroff
+;menu-2-1 = cancel
+;menu-2-1-exec = menu-open-0
+
+[settings]
+screenchange-reload = true
+;compositing-background = xor
+;compositing-background = screen
+;compositing-foreground = source
+;compositing-border = over
+
+[global/wm]
+margin-top = 0
+margin-bottom = 0
+
+[module/paquetes]
+type = custom/script
+exec = dpkg --get-selections | grep -v deinstall | wc -l
+interval = 18000
+;interval = 0
+click-left = st -e dpkg -l &
+;click-right = whatever
+format = <label>
+;format-prefix = "  "
+format-prefix = "📦  "
+;label = "hola"
+
+[module/n]
+type = custom/script
+;exec = apt list --upgradeable | wc -l
+exec = echo hola
+interval = 18000
+;click-left = whatever
+;click-right = whatever
+format = <label>
+format-prefix = " "
+;format-prefix = "n "
+;label = "hola"
+
+[module/ipp]
+type = custom/script
+exec = curl -4 -sf ipinfo.io/ip
+interval = 18000
+;click-left = whatever
+;click-right = whatever
+format = <label>
+format-prefix = " "
+;label = "hola"
+
+[module/correo]
+type = custom/text
+;click-left = xdg-open https://lite.duckduckgo.com/lite/ &
+click-left = $HOME/descargas/st -e newsboat &
+click-right = $HOME/descargas/st -e neomutt &
+;click-right = whatever
+;content = 
+content = 📪
+; vim:ft=dosini
+
+
+[module/checknetwork]
+type = custom/text
+;exec = $HOME/.config/barblocks/check-network
+;interval = 18000
+click-left = pcmanfm &
+click-right = gksu -u root pcmanfm &
+content = 📁
+;click-right = whatever
+;format = <label>
+;format-prefix = " "
+;label = "hola"
+
+[module/weather]
+type = custom/script
+exec = $HOME/.config/barblocks/forecast
+interval = 18000
+;interval = 0
+;click-left = st -e links2 wttr.in & 
+click-left = st -e $HOME/.config/barblocks/tiempo &
+click-right = st -e $HOME/.config/barblocks/luna &
+;click-right = whatever
+format = <label>
+;format-prefix = "  "
+format-prefix = "⛅ "
+;label = "hola"
+
+[module/luna]
+type = custom/script
+exec = $HOME/.config/barblocks/alt
+;interval = 18000
+interval = 0
+;click-left = st -e links2 wttr.in & 
+;click-left = st -e curl -sf4 wttr.in | less -r & 
+;click-right = whatever
+format = <label>
+;format-prefix = "  "
+;label = %output%
+
+[module/red]
+type = custom/script
+;interface = wlan0
+interval = 60
+exec = echo 'wlan0'
+format-prefix = "📡 "
+click-right = notify-send "$(curl -4sf ipinfo.io | tr -d '"' || curl -4sf ifconfig.co/json)" &
+;click-right = $HOME/.config/barblocks/ip &
+click-left = wireshark &
+
+[module/volumen]
+type = custom/ipc
+;interface = wlan0
+;interval = 60
+hook-0 = $HOME/.config/barblocks/vol2 &
+;hook-0 = amixer sget Master | awk '/%/ {print $4}' | tr -d '[]'
+;exec = echo 'wlan0'
+;format-prefix = " "
+click-left = (bspc rule -a alsamixer state=floating && st -c alsamixer -e alsamixer ; bspc rule -r alsamixer) &
+;click-left = ( st -e alsamixer ; bspc node -t floating) &
+initial = 1
+
+[module/menu]
+type = custom/script
+;interface = wlan0
+interval = 60000
+;interval = 0
+;hook-0 = $HOME/.config/barblocks/vol
+exec = echo '🚦'
+format-prefix = "🎶"
+click-left = (bspc rule -a musica state=floating && $HOME/descargas/st -c musica -e mocp ; bspc rule -r musica) &
+;click-left = ($HOME/descargas/st -c musica -e mocp; bspc node -t floating same_class musica)  &
+click-right = $HOME/.config/barblocks/menu &
+;initial = 1
+
+[module/hora]
+type = custom/script
+;interface = wlan0
+interval = 300 
+;hook-0 = $HOME/.config/barblocks/vol
+exec = $HOME/.config/barblocks/date
+format-prefix = "📅 "
+click-left = st -e calcurse &
+click-right = (bspc rule -a calendario state=floating rectangle=550x200+800+30 && st -c calendario -e $HOME/.config/barblocks/cal; bspc rule -r calendario) &
+;click-right = bspc node -t floating && bspc node rectangle=550x200+800+30 && st -e $HOME/.config/barblocks/cal &
+;initial = 1
+
+;[module/demo]
+;type = custom/ipc
+;hook-0 = amixer sget Master | awk '/%/ {print $4}' | tr -d '[]' && polybar-msg -p %pid% hook demo 1
+;hook-1 = echo eso
+;hook-2 = echo esa
+;initial = 1
+;click-left = polybar-msg -p %pid% hook demo 1
+;click-right = polybar-msg -p %pid% hook demo 2
+;double-click-left = polybar-msg -p %pid% hook demo 3

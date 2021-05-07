@@ -1,0 +1,48 @@
+#!/bin/sh
+
+a=$(printf "a los 15 mim\\na los 30 mim\\na los 45 mim\\na la 1 hora\\na la 1h:30 mim\\na las 2 horas\\na las 3h:30 mim\\na las 3 horas\\n" | xmenu)
+b=$(printf "$a" | awk '{printf $3}')
+#printf "$a"
+case $a in
+	"a los 15 mim") while true; do
+		c=$(echo 60*"$b" | bc) && notify-send "el sistema se apagara en $c mim"
+		sleep $c
+		sudo poweroff
+	done &;;
+	"a los 30 mim") while true; do
+		c=$(echo 60*"$b" | bc)
+		sleep $c
+		sudo poweroff
+	done & ;;
+	"a los 45 mim") while true; do
+		c=$(echo 60*"$b" | bc)
+		sleep $c
+		sudo poweroff
+	done &;;
+	"a la 1 hora") while true; do
+		c=$(echo 60*60 | bc)
+		sleep $c
+		sudo poweroff
+	done &;;
+	"a las 3 horas") while true; do
+		c=$(echo 60*60*3 | bc)
+		sleep $c
+		sudo poweroff
+	done &;;
+	"a la 1h:30 mim") while true; do
+		c=$(echo 90*60 | bc)
+		sleep $c
+		sudo poweroff
+	done &;;
+	"a las 2 horas") while true; do
+		c=$(echo 60*"$b" | bc)
+		sleep $c
+		sudo poweroff
+	done &;;
+	"a las 2h:30 mim") while true; do
+		c=$(echo 7200*1800 | bc)
+		sleep $c
+		sudo poweroff
+	done &;;
+
+esac

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+#links2 -address-preference 3 -g www.duckduckgo.com &
+links2 -http.fake-user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36" -address-preference 3 -g www.google.com &
+#-http.fake-firefox 1 

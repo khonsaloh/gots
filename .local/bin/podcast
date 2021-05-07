@@ -1,0 +1,10 @@
+#!/bin/sh
+
+folder=/tmp/lista_reproduccion.txt
+
+[ -n "$1" ] && mpv --no-video --playlist $1 ||
+	setsid notify-send "reproduciendo podcast en lista"  \
+	-i /usr/share/icons/papir*/24x24/categories/rhythmbox.png \
+	&& mpv --really-quiet '--ytdl-raw-options=force-ipv4=' --no-video --playlist=$folder &
+
+

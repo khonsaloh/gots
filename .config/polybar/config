@@ -1,0 +1,283 @@
+
+[colors]
+background = #222
+background-alt = #444
+foreground = #dfdfdf
+foreground-alt = #ffffff
+
+primary = #ffb52a
+secondary = #e60053
+alert = #bd2c40
+
+[modules/xmenu]
+menu-0 = item 1;command
+menu-0-0 = sub-item 1.1;command
+menu-0-1 = sub-item 1.2;command
+menu-0-2 = sub-item 1.3;command
+menu-1 = item 2;command
+menu-1-0 = sub-item 2.1;command
+menu-1-1 = sub-item 2.2;command
+
+[bar/statbar]
+width = 100%
+height = 27
+offset-x = 0
+offset-y = 0
+radius = 0.0
+fixed-center = false
+
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+line-size = 3
+line-color = #67530b
+
+border-size = 0
+
+padding-left = 5
+padding-right = 1
+
+module-margin-left = 1
+module-margin-right = 2
+
+
+font-0 = HackNerdFont:pixelsize=10;1
+
+modules-left = bspwm 
+modules-right = folder menu volumen weather correo paquetes cpu memory red battery temperature hora 
+
+tray-position = none
+tray-padding = 2
+
+
+wm-restack = bspwm
+
+enable-ipc = true
+
+
+[module/alsa]
+type = internal/alsa
+format-volume = <ramp-volume> <label-volume>
+format-muted =  0%
+ramp-volume-0 = 
+ramp-volume-1 = 
+ramp-volume-2 = 
+click-left = st -e alsamixer &
+ramp-volume-foreground = ${colors.primary}
+
+[module/bspwm]
+type = internal/bspwm
+
+label-focused = %index%
+label-focused-background = ${colors.background-alt}
+label-focused-padding = 2
+
+label-occupied = %index%
+label-occupied-padding = 2
+
+label-urgent = %index%!
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 2
+
+label-empty = 
+label-empty-foreground = "#696969"
+label-empty-padding = 2
+
+ws-icon-0 = 1:
+
+[module/xbacklight]
+type = internal/xbacklight
+
+format = <label> <bar>
+label = BL
+
+bar-width = 10
+bar-indicator = |
+bar-indicator-foreground = #ff
+bar-indicator-font = 2
+bar-fill = ─
+bar-fill-font = 2
+bar-fill-foreground = #9f78e1
+bar-empty = ─
+bar-empty-font = 2
+bar-empty-foreground = ${colors.foreground-alt}
+
+[module/backlight-acpi]
+inherit = module/xbacklight
+type = internal/backlight
+card = intel_backlight
+
+[module/cpu]
+type = internal/cpu
+interval = 2
+format-prefix = " "
+label = %percentage%%
+
+[module/memory]
+type = internal/memory
+interval = 2
+format-prefix = " "
+label = %percentage_used%%
+
+[module/wlan]
+type = internal/network
+interface = wlan0
+interval = 10
+format-prefix = "﬉ "
+
+format-connected = ﬉ wlan0 
+format-connected-underline = #8A8383
+
+format-disconnected = <label-disconnected>
+format-disconnected-underline = ${self.format-connected-underline}
+label-disconnected = %ifname% disconnected
+label-disconnected-foreground = ${colors.foreground-alt}
+
+[module/date]
+type = internal/date
+interval = 120
+
+date =
+date-alt = " %d-%m-%Y"
+
+time = %H:%M
+time-alt = %H:%M
+
+format-prefix = " "
+format-prefix-foreground = #846702
+format-underline = #8A8383
+
+label = %date% %time%
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = ADP1
+full-at = 98
+
+format-charging = <animation-charging> <label-charging>
+format-charging-underline = #ffb52a
+
+format-discharging = <ramp-capacity> <label-discharging>
+format-discharging-underline = ${self.format-charging-underline}
+
+format-full-prefix = " "
+format-full-prefix-foreground = ${colors.foreground-alt}
+format-full-underline = ${self.format-charging-underline}
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-foreground = ${colors.foreground-alt}
+
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-foreground = ${colors.foreground-alt}
+animation-charging-framerate = 750
+
+[module/temperature]
+type = internal/temperature
+thermal-zone = 0
+warn-temperature = 60
+
+format = <ramp> <label>
+format-warn = <ramp> <label-warn>
+
+label = %temperature-c%
+label-warn = %temperature-c%
+label-warn-foreground = ${colors.secondary}
+
+ramp-0 = 
+ramp-1 = 
+ramp-2 = 
+ramp-foreground = ${colors.foreground-alt}
+
+[settings]
+screenchange-reload = true
+
+[global/wm]
+margin-top = 0
+margin-bottom = 0
+
+[module/paquetes]
+type = custom/script
+exec = dpkg --get-selections | grep -v deinstall | wc -l
+interval = 18000
+click-left = st -e dpkg -l &
+format = <label>
+format-prefix = " "
+
+[module/n]
+type = custom/script
+exec = echo hola
+interval = 18000
+format = <label>
+format-prefix = " "
+
+[module/ipp]
+type = custom/script
+exec = curl -4 -sf ipinfo.io/ip
+interval = 18000
+format = <label>
+format-prefix = " "
+
+[module/correo]
+type = custom/text
+click-left = $HOME/descargas/st -e newsboat &
+click-right = $HOME/descargas/st -e neomutt &
+content = 
+
+
+[module/folder]
+type = custom/text
+click-left = pcmanfm &
+click-right = gksu -u root pcmanfm &
+content = 
+
+[module/weather]
+type = custom/script
+exec = $HOME/.config/barblocks/forecast
+interval = 18000
+click-left = st -e $HOME/.config/barblocks/tiempo &
+click-right = st -e $HOME/.config/barblocks/luna &
+format = <label>
+format-prefix = "  "
+
+[module/luna]
+type = custom/script
+exec = $HOME/.config/barblocks/alt
+interval = 0
+format = <label>
+
+[module/red]
+type = custom/script
+interval = 60
+exec = echo 'wlan0'
+format-prefix = "﬉ "
+click-right = notify-send "$(curl -4sf ipinfo.io | tr -d '"' || curl -4sf ifconfig.co/json)" &
+click-left = wireshark &
+
+[module/volumen]
+type = custom/ipc
+hook-0 = $HOME/.config/barblocks/vol &
+click-left = (bspc rule -a alsamixer state=floating && st -c alsamixer -e alsamixer ; bspc rule -r alsamixer) &
+initial = 1
+
+[module/menu]
+type = custom/script
+interval = 60000
+exec = echo ''
+format-prefix = " "
+click-left = (bspc rule -a musica state=floating && $HOME/descargas/st -c musica -e mocp ; bspc rule -r musica) &
+click-right = $HOME/.config/barblocks/menu &
+
+[module/hora]
+type = custom/script
+interval = 300 
+exec = $HOME/.config/barblocks/date
+format-prefix = " "
+click-left = st -e calcurse &
+click-right = (bspc rule -a calendario state=floating rectangle=550x200+800+30 && st -c calendario -e $HOME/.config/barblocks/cal; bspc rule -r calendario) &
+

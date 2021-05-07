@@ -1,0 +1,5 @@
+#!/bin/bash
+
+ncal -b3
+read
+bspc rule -r 'st-256color' 

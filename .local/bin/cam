@@ -1,0 +1,6 @@
+#!/bin/sh
+
+#mpv av://v4l2:/dev/video0 --no-cache --vf=hflip --title="webcam" --x11-name=Webcam --geometry=-0-0 \
+#	--autofit=30% --profile=low-latency --no-osc --untimed >/dev/null 2>&1 &
+pkill -f /dev/video* || mpv av://v4l2:/dev/video0 --no-input-default-bindings --no-cache --vf=hflip --title="webcam" --x11-name=Webcam --geometry=-0-0 \
+	--autofit=30% --profile=low-latency --no-osc --untimed >/dev/null 2>&1 &

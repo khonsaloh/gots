@@ -1,0 +1,8 @@
+#!/bin/sh
+
+a=$(printf "extenso\\n" | fzf --cycle --reverse --prompt='elige perfil de vim a cargar: ')
+[ -z "$a" ] && exit 1
+
+case $a in
+	"extenso") vim -u ~/.config/vim/.vimrc1 "$1"
+esac

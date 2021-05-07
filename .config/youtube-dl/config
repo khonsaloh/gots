@@ -1,0 +1,9 @@
+
+#-o "~/descargas/[%(upload_date)s][%(id)s] %(title)s (by %(uploader)s).%(ext)s"
+-o /tmp/%(title)s.%(ext)s 
+--restrict-filenames
+--force-ipv4
+-w
+-i
+#--external-downloader aria2c
+#--external-downloader-args "-x8 -s8 -k1M"

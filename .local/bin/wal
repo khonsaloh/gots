@@ -1,0 +1,6 @@
+#!/bin/sh
+
+xwallpaper --zoom "$(/usr/bin/find /usr/share/wallpaper/ -type f |
+       	sxiv -tio 2>/dev/null)" 2>/dev/null &
+
+

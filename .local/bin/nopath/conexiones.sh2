@@ -1,0 +1,16 @@
+#!/bin/sh
+
+#a="$(netstat -pon | grep tcp)"
+#watch -n 5 "$a"
+
+rojo='\033[0;31m'
+verde='\033[0;32m'
+
+while true; do
+	printf "${rojo}"
+	netstat -pn | grep tcp
+	printf "${verde}=================================================================\n"
+	printf "=================================================================\n"
+	sleep 5
+done
+#watch -n 5 $(netstat -pon) | grep tcp

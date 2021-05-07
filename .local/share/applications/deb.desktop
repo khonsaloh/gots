@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=Paquetes debian
+Exec=/usr/bin/gdebi-gtk %f

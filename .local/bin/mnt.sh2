@@ -1,0 +1,51 @@
+#!/bin/sh
+
+#comprueba los valores para $1 (variable de input)
+
+if [ -z "$1" ]; then
+	echo 'opciones son dvd, usb, usb2, win'
+fi
+
+a=$(mountpoint /media/usb)
+b=$(mountpoint /media/sr0)
+c=$(mountpoint /mnt)
+d=$(mountpoint /media/usb2)
+case $1 in
+	"dvd") 
+	if [ "$b" = "/media/sr0 is a mountpoint" ]
+	then
+		sudo umount /media/sr0
+	fi
+	if [ "$b" = "/media/sr0 is a mountpoint" ]
+	then 
+		sudo mount /dev/sr0 /media/sr0
+	fi;;
+	"usb")
+	if [ "$a" = "/media/usb is a mountpoint" ]
+	then
+		sudo umount /media/usb			
+	fi
+	if [ "$a" = "/media/usb is not a mountpoint" ]
+	then
+		sudo mount /dev/sdb1 /media/usb
+	fi;;
+	"win")
+	if [ "$c" = "/mnt is a mountpoint" ]
+	then
+		sudo umount /mnt			
+	fi
+	if [ "$c" = "/mnt is not a mountpoint" ]
+	then
+		sudo mount /dev/sda1 /mnt
+	fi;;
+	"usb2")
+	if [ "$d" = "/mnt is a mountpoint" ]
+	then
+		sudo umount /media/usb2		
+	fi
+	if [ "$d" = "/mnt is not a mountpoint" ]
+	then
+		sudo mount /dev/sdc1 /media/usb2
+	fi;;
+esac
+

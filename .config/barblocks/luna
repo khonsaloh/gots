@@ -1,0 +1,3 @@
+#!/bin/sh
+
+curl -sf -4 "wttr.in/moon" | grep -v 'Follow' | less -SsR~

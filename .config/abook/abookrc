@@ -1,0 +1,54 @@
+# Example of field definitions:
+field pager = Pager
+field address_lines = Address, list
+field birthday = Birthday, date
+
+
+# Example of views:
+view CONTACT = name, email
+view ADDRESS = address_lines, city, state, zip, country
+view PHONE = phone, workphone, pager, mobile, fax
+view OTHER = url, birthday
+
+# Automatically save database on exit
+set autosave=true
+
+set preserve_fields=standard
+
+# Show all email addresses in list
+set show_all_emails=true
+
+set index_format=" {name:25} {phone:-12|workphone|mobile} {anniversary}"
+
+# Command used to start mutt
+set mutt_command=mutt
+
+# Return all email addresses to a mutt query
+set mutt_return_all_emails=true
+
+# Command used to print
+set print_command=lpr
+
+# Command used to start the web browser
+set www_command=lynx
+
+# address style [eu|us|uk]
+set address_style=eu
+
+# use ASCII characters only
+set use_ascii_only=false
+
+set add_email_prevent_duplicates=false
+
+# field to be used with "sort by field" command
+set sort_field=nick
+
+# show cursor in main display
+set show_cursor=false
+
+# colors
+set use_colors = true
+set color_header_fg = yellow
+set color_header_bg = default
+set color_list_header_fg = grey
+set color_list_header_bg = default

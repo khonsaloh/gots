@@ -1,0 +1,6 @@
+#!/bin/sh
+
+iconpath=/usr/share/icons/*/24x24
+a=$(/usr/bin/ls -D $iconpath | dmenu -l 30 -p 'elige carpeta de iconos: ') \
+	&& sxiv -to $iconpath/"$a" | xclip -r -sel clip \
+	&& b="$(xclip -o -sel clip)" && notify-send -t 1000 --urgency=low "copiado $b" -i "$b"

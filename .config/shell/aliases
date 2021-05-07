@@ -1,0 +1,52 @@
+#!/bin/sh
+# cd shorts 
+alias s3='cd $HOME/.local/bin/' \
+	cm='cd /usr/share' \
+	mm='cd ~/mm' \
+	usb='cd /media/usb/' \
+	bak="cd $HOME/scripts/bak" \
+	s2='cd /usr/local/bin' \
+	e="cd /etc " \
+	..="cd .. " \
+	doc='clear && cd ~/doc' \
+	b="cd /usr/bin" \
+	cf="cd  ~/.config/ " \
+	d="cd ~/descargas/" \
+	s="cd $HOME/scripts/ "
+# list
+alias l='clear && if [ $PWD = $HOME ]; then lsd -h --group-dirs first --no-symlink; else lsd -Ah --group-dirs first --no-symlink; fi' \
+	ll='lsd -lAh --group-dirs first' \
+	ls='clear && lsd -h --group-dirs first' \
+	lt='clear && lsd -lAtr'
+#git
+alias dots="/usr/bin/git --git-dir=$HOME/.local/share/dotfiles --work-tree=$HOME" \
+	gs='git status' \
+	da='dots add'
+
+#color
+alias du='grc du -h' \
+	diff='clear && colordiff' \
+	t='ncdu --color dark' \
+	env='grc env'
+
+alias uu='clear && sudo apt update && sudo apt upgrade'
+alias mount='clear && mount | column -t'
+alias md='bat ~/wiki/markdown.md'
+alias i='tragar sxiv -to .'
+alias q='exit'
+alias h='htop'
+alias tm='if tmux has; then tmux attach; else tmux new; fi'
+alias rm='rm -r -i '
+alias in='clear && /usr/sbin/arp -a && cat /run/connman/resolv.conf && sudo grc iptables -nL && sudo grc ifconfig'
+alias df='clear && grc lsblk && echo && grc df -h'
+
+function cd () {
+	new_dir="$*";
+	if [ $# -eq 0 ]; then
+		new_dir=${HOME};
+		clear && builtin cd "${new_dir}" && lsd --group-dirs first
+	else
+		clear && builtin cd "${new_dir}" && lsd -Ah --group-dirs first --no-symlink
+	fi;
+}
+

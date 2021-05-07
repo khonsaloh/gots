@@ -1,0 +1,93 @@
+
+alias s3='cd $HOME/.local/bin/'
+alias cm='cd /usr/share'
+alias mm='cd ~/mm'
+alias usb='cd /media/usb/'
+alias bak="cd $HOME/scripts/bak"
+alias s2='cd /usr/local/bin'
+#alias dev="cd /dev"
+alias e="cd /etc "
+alias ..="cd .. "
+alias doc='clear && cd ~/doc'
+alias b="cd /usr/bin"
+alias cf="cd  ~/.config/ "
+alias d="cd ~/descargas/"
+alias s="cd $HOME/scripts/ "
+#alias ffplay='ffplay -hide_banner -noborder -seek_interval 5'
+#alias wget='/usr/local/bin/wget'
+#alias mpv='tragar mpv'
+alias mount='clear && mount | column -t'
+alias diff='clear && colordiff'
+alias uu='clear && sudo apt update && sudo apt upgrade'
+#alias contraseña="openssl rand -base64 20"
+#alias grupos='clear && column /etc/group -t -s ":" | less -R | column'
+#alias usuarios='clear && column /etc/passwd -t -s ":"'
+#alias free='clear && grc free -h'
+alias du='grc du -h'
+alias gs='git status'
+#alias cal='ncal -b -3'
+alias md='bat ~/wiki/markdown.md'
+#alias instalado='apt list --installed | grep '
+alias i='tragar sxiv -to .'
+alias dots="/usr/bin/git --git-dir=$HOME/.local/share/dotfiles --work-tree=$HOME"
+#alias ad="apt dist-upgrade -V"
+#alias ac="sudo apt clean"
+#alias aud="apt update;apt dist-upgrade -V"
+#alias aa="sudo apt autoremove"
+#alias ffprobe="ffprobe -hide_banner"
+alias q='exit'
+#alias l='clear && lsd -Ah --group-dirs first --no-symlink'
+alias l='clear && if [ $PWD = $HOME ]; then lsd -h --group-dirs first --no-symlink; else lsd -Ah --group-dirs first --no-symlink; fi'
+alias ll='lsd -lAh --group-dirs first'
+alias ls='clear && lsd -h --group-dirs first'
+alias t='ncdu --color dark'
+alias lt='clear && lsd -lAtr'
+#alias tv='tmux split-window -h'
+#alias th='tmux split-window -v'
+alias tm='if tmux has; then tmux attach; else tmux new; fi'
+alias rm='rm -r -i '
+#alias sysinfo='clear && inxi'
+#alias cp='cd -r'
+alias in='clear && /usr/sbin/arp -a && cat /run/connman/resolv.conf && sudo grc iptables -nL && sudo grc ifconfig'
+#alias in='clear && /usr/sbin/arp -a && cat /run/connman/resolv.conf && sudo grc iptables -nL && sudo ip -color addr'
+alias env='grc env'
+alias df='clear && grc lsblk && echo && grc df -h'
+#alias ka='killall'
+alias h='htop'
+#alias f='ehlo=$(find -type d -not -path "./.cache*" -not -path "./.mozilla*" -not -path "./.thumbnails*" | fzf --cycle) && cd $ehlo'
+
+function cd () {
+	new_dir="$*";
+	if [ $# -eq 0 ]; then
+		new_dir=${HOME};
+		clear && builtin cd "${new_dir}" && lsd --group-dirs first
+	else
+		clear && builtin cd "${new_dir}" && lsd -Ah --group-dirs first --no-symlink
+	fi;
+}
+
+#function l () {
+#	if [ $PWD = $HOME ]; then
+#		clear && lsd -h --group-dirs first
+#	else
+#		clear && lsd -Ah --group-dirs first --no-symlink
+#	fi;
+#}
+
+#function cd () {
+#	new_directory="$*";
+#	if [ $# -eq 0 ]; then
+#		new_directory=${HOME};
+#	fi;
+#	clear && builtin cd "${new_directory}" && lsd -Ah --group-dirs first --no-symlink
+#}
+
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+#export HISTCONTROL='ignoredups'
+#export HISTIGNORE='history:im:g:t:h:ping:navegador:c:df:m:ll:s:s2:d:mm:e:l:cfg:q:vbu:br:vb:b:cd:r:ls:n:'
+
+#eval $(thefuck)
+#alias f='thefuck'
+#shopt -s autocd 

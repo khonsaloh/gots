@@ -1,0 +1,73 @@
+set runtimepath+=~/.config/vim,~/.config/vim/after
+call plug#begin('~/.config/vim/plugged')
+
+Plug 'https://github.com/tpope/vim-surround.git'
+Plug 'https://github.com/ap/vim-css-color.git'
+Plug 'junegunn/goyo.vim'
+Plug 'https://github.com/kien/ctrlp.vim.git'
+"Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+"Plug 'junegunn/fzf.vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'itchyny/lightline.vim'
+"Plug 'https://github.com/liuchengxu/vim-which-key.git'
+"A
+"https://github.com/neoclide/coc.nvim
+call plug#end()
+set viminfo+=n~/.config/vim/viminfo
+set noswapfile
+"set lazyredraw
+set spelllang=es
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+set laststatus=2
+"mostrar estado abajo
+set noshowmode
+set scrolloff=10
+vmap <F11> :!xclip -f -sel clip<CR>
+map <F12> :-1r !xclip -o -sel clip<CR>
+set nowrap
+set mouse=a
+"colo desert
+
+"set omnifunc=javascriptcomplete#CompleteJS
+"set wildmode=longest,list,full
+"set title
+set bg=light
+"set cursorline
+"hi CursorLine ctermbg=8 ctermfg=15 "8 = dark gray
+"hi Cursor ctermbg=15 ctermfg=8
+"set cursorcolumn
+
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+map <C-o> <C-w>o
+
+" Run xrdb whenever Xdefaults or Xresources are updated.
+autocmd BufRead,BufNewFile .xresources,xdefaults set filetype=xdefaults 
+autocmd BufWritePost .Xresources,Xdefaults,xresources,xdefaults !xrdb %
+autocmd BufWritePost ./.config/bspwm/bspwmrc !bspc wm -r 
+autocmd BufWritePost scripts/repos/dwm !make %
+autocmd BufWritePost ./.config/polybar/config-emoji !polybar-msg cmd restart 
+autocmd BufWritePost ./.config/polybar/config !polybar-msg cmd restart 
+
+nnoremap U <C-R>
+autocmd BufWritePost ./.config/sxhkd/sxhkdrc  !pkill -USR1 -x sxhkd 
+"set cursorline
+"highlight CursorLine ctermbg=white cterm=bold guibg=#2b2b2b 
+"" vim-gitgutter used to do this by default:
+highlight! link SignColumn LineNr
+
+"whichkey plugin
+let g:mapleader = "\<Space>"
+let g:maplocalleader = ','
+nnoremap <silent> <leader>      :<c-u>WhichKey '<Space>'<CR>
+"nnoremap <silent> <localleader> :<c-u>WhichKey  ','<CR>
+
+" or you could do this:
+ highlight SignColumn guibg=black ctermbg=black
+ highlight GitGutterAdd    guifg=#009900 ctermfg=2
+ highlight GitGutterChange guifg=#bbbb00 ctermfg=3
+ highlight GitGutterDelete guifg=#ff2222 ctermfg=1
+

@@ -1,0 +1,10 @@
+#!/bin/sh
+case $1 in
+	btc|bitcoin) curl -4sf rate.sx/btc ;;
+	eth|ethereum) curl -4sf rate.sx/eth ;;
+	xrp|ripple) curl -4sf rate.sx/xrp ;;
+	xrp|ripple) curl -4sf rate.sx/xrp ;;
+	-h|--help) echo '# ejemplo curl -4sf rate.sx/btc@20d # ejemplo curl -4sf rate.sx/1btc';;
+	*) curl -4sf rate.sx/$1 | less -RS ;;
+esac
+

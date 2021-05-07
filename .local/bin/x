@@ -1,0 +1,3 @@
+#!/bin/sh
+[ -n "$1" ] && notify-send "$(cat "$1" |xclip -f -sel clip)" --urgency=low -t 1000
+

@@ -1,0 +1,47 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+source $HOME/.config/shell/aliases
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && return
+
+HISTCONTROL=ignoreboth
+#export HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+rojo='\[\e[0;31m\]'
+bluefor='\[\e[0;34m\]'
+cyan='\[\e[0;36m\]'
+CYAN='\[\e[1;36m\]'
+purplefor='\[\e[0;35m\]'
+nc='\[\e[0m\]'
+bobback='\[\e[44m\]'
+cyanback='\[\e[46m\]'
+
+# Set a non-distracting prompt.
+#PS1='\[[01;32m\]\u@\h\[[00m\]:\[[01;34m\]\w\[[00m\] \[[01;33m\]$(parse_git_branch)\[[00m\]\$ '
+
+if [ "$UID" = 0 ]; then
+    PS1="$rojo\u$nc@$rojo\H$nc:$CYAN\w$nc\\n$rojo#$nc "
+else
+    #PS1="$purple\u$red@$red\H$nc:$green\w$nc\\n$GREEN\$nc\$ "
+    #PS1="[$purple\u$red@$nc:$green\w$nc]$ "
+    #PS1="$rojo[$purple\u$nc:$green\w$rojo]$nc$ "
+    PS1="$purplefor$bobback \u $bluefor$cyanback$purplefor$cyanback \w $cyan$nc "
+fi
+
+if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+    . /etc/bash_completion
+fi
+
+#export HISTCONTROL='ignoredups'
+export HISTIGNORE='history:im:g:t:h:ping:navegador:c:df:m:ll:s:s2:d:mm:e:l:cfg:q:vbu:br:vb:b:cd:r:ls:n:'
+export HISTSIZE=1000
+#export HISTFILESIZE=2000
+HISTFILE=~/.cache/bash_history
+#shopt -s autocd 

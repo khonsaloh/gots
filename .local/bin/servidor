@@ -1,0 +1,40 @@
+#!/bin/sh
+
+#http://$HOSTNAME:8000/
+#para python 2.x
+#python -m SimpleHTTPServer #8000
+#para python 3.x
+
+archivo=/tmp/servidores
+
+[ -n "$1" ] &&
+case $1 in
+	-l|l|--list) cat $archivo && exit || printf "$(ss -atu | awk '{print $5}' | awk -F: '/:80/' | uniq)" > /tmp/lista  \
+		&& cu=$(awk '{print $1}' /tmp/servidores >/tmp/dump) && grep $cu /tmp/lista ;; #&& cat $archivo;;
+	-q|quit|--quit|q) e=$(cat $archivo | fzf --reverse --cycle | cut -d ' ' -f1) && [ -z "$e" ] && exit || d=$(netstat -tulnap 2>/dev/null | grep $e | sed 's/python3 //g' | tr -d '/' | awk '{print $7}') && kill $d && sed -i "/$e/d" $archivo && notify-send "instancia de servidor terminada";;
+	ka|-ka|qa|--killall) d=$(netstat -tulnap 2>/dev/null | grep '0.0.0.0:80' | sed 's/python3 //g' |
+	       tr -d '/' | awk '{print $7}' ) && kill $d 2>/dev/null && sed -i '/^0/d' $archivo && notify-send "terminadas TODAS las instancias de servidor";;
+	*) c=$(printf "listar\\nterminar instancia\\nterminar TODAS las instancias\\n" | fzf --reverse --cycle) 
+		case $c in
+			"listar") sudo netstat -tulnap | grep '0.0.0.0:80' ;;
+			"terminar instancia") e=$(cat $archivo | fzf --reverse --cycle | cut -d ' ' -f1) && [ -z "$e" ] && exit || d=$(netstat -tulnap 2>/dev/null | grep $e | sed 's/python3 //g' | tr -d '/' | awk '{print $7}') && sed -i "/$e/d" $archivo && notify-send "instancia de servidor terminada";;
+			"terminar TODAS las instancias") d=$(netstat -tulnap 2>/dev/null | grep '0.0.0.0:80' | sed 's/python3 //g' | tr -d '/' |
+			       	awk '{print $7}' ) && kill $d && echo > $archivo && notify-send "terminadas TODAS las instancias de servidor";;
+		esac ;;
+esac
+[ -n "$1" ] && exit 1
+
+pidof $BROWSER >/dev/null || $BROWSER &
+while ! pgrep $BROWSER >/dev/null; do
+	sleep 1
+done
+
+abiertos=$(ss -atu | awk '{print $5}' | awk -F: '/:80/ {print $NF}' | uniq)
+printf "$(seq 8000 8030)" > /tmp/puertos
+c=$(grep -x -v "$abiertos" /tmp/puertos 2>/dev/null | head -n 1)
+python3 -m http.server "$c" & 
+$BROWSER http://0.0.0.0:$c && echo 0.0.0.0:$c $(pwd) >> $archivo
+exit 
+
+#servidor en perl
+#perl -M HTTP::Server::Simple -e 'HTTP::Server::Simple.new.run'

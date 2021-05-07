@@ -1,0 +1,21 @@
+#!/bin/sh
+cat << EOF
+
+(1) ver modulos de la libreria standard de python
+(2) ver modulos instalados externos
+(3) actualizar modulos externos
+(4) mostrar info de modulo instalado
+(5) desinstalar modulo python
+
+EOF
+printf "opcion: " && read -r opcion
+
+case $opcion in
+	"1") python3 ;;
+	"3") a="$(pip3 list | cut -d' ' -f1 | tail -n +3 | fzf --cycle --reverse --prompt='modulo a actualizar: ')" \
+		&& [ -z "$a" ] && exit || pip3 install --user --upgrade $a ;;
+	"2") pip3 list;;
+	"4") pip3 show "$(pip3 list | cut -d' ' -f1 | tail -n +3 | fzf --cycle --reverse)";;
+	"5") pip3 uninstall "$(pip3 list cut -d' ' -f1 | tail -n +3 | fzf --cycle --prompt='modulo a desinstalar: ')" ;;
+esac
+

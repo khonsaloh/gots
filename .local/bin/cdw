@@ -1,0 +1,4 @@
+#!/bin/sh
+
+unset HOME && export HOME="$XDG_CONFIG_HOME/extras"
+/usr/bin/cdw

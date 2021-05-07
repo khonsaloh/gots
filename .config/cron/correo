@@ -1,0 +1,4 @@
+#!/bin/sh
+/usr/bin/ping -4 -q -c 1 example.org >/dev/null || /usr/bin/ping -4 -q -c 1 google.com >/dev/null || exit
+mbsync -c "$XDG_CONFIG_HOME"/mbsync/mbsyncrc -a \
+	&& notify-send "correo actualizado" -i /usr/share/icons/papiru*/24x24/categories/sylpheed.png

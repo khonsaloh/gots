@@ -1,0 +1,41 @@
+#!/bin/sh
+while read -r file
+do
+	case "$1" in
+		"w")
+			xwallpaper --zoom "$file" && notify-send "cambiado fondo de forma temporal";;
+		"W")
+			xwallpaper --zoom "$file" \
+			       && readlink -f  "$file" > $HOME/.local/share/fondo.txt \
+			       && notify-send "fondo establecido de forma permanente";;
+		"e")
+			display "$file";;
+		"c")
+			[ -z "$destdir" ] && destdir="$( envsubst < $HOME/.local/share/book | grep -v '^#' | dmenu -l 20 -i -p "a donde quieres copiar?")"
+			[ ! -d "$destdir" ] && notify-send "$destdir no es un directorio, cancelado." && exit
+			cp "$file" "$destdir" && notify-send -i "$(readlink -f "$file")" "$file copiado a $destdir." &
+			;;
+		"m")
+			[ -z "$destdir" ] && destdir="$( envsubst < $HOME/.local/share/book | grep -v '^#' | dmenu -l 20 -i -p "a donde quieres mover?")"
+			[ ! -d "$destdir" ] && notify-send "$destdir no es un directorio, cancelado." && exit
+			mv "$file" "$destdir" && notify-send -i "$(readlink -f "$file")" "$file movido a $destdir." &
+			;;
+		"h")
+			notify-send "w, W para cambiar fondo de escritorio; r, R - rotar imagen, d - eliminar imagen; y, Y - copiar nombre al portapapeles; e, editar imagen" ;;
+		"y")
+			printf "$file" | tr -d '\n' | xclip -sel c -r \
+			&& notify-send -t 2000 "$file copiado al portapapeles" & ;;
+		"d")
+			[ "$(printf "Yes\\nNo" | dmenu -i -p "eliminar $file?")" = "Yes" ] \
+				&& rm "$file" && notify-send "$file eliminado." ;;
+		"u")
+			imgur.sh "$file" >/dev/null | head -n 1 | xclip -sel c -r ;;
+		"p")
+			convert "$file" -strip -interlace Plane -quality 85% "$file.jpg" \
+				&& notify-send "generada imagen de peso reducido";;
+		"space")
+			file=$file && export file && $HOME/scripts/mag;;
+		"i")
+			b=$(readlink -f "$file") && setsid -f st -e dash -c "identify -verbose $b | less";;
+	esac
+done

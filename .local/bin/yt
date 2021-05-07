@@ -1,0 +1,55 @@
+#!/bin/sh
+
+var=$(xclip -o)
+
+case $1 in
+	-e) $EDITOR $(readlink -f "$0") && exit;;
+esac
+[ -n "$var" ] && [ -z "$(echo $var | grep '^htt')" ] && printf "pon url del elemento a descargar: " && read -r var 
+[ -z "$var" ] && printf "pon url del elemento a descargar: " && read -r var
+
+dir=/tmp/vid/
+tiempo=$(date +%Y%m%d%H%M%S)
+
+[ ! -f $dir ] && mkdir -p $dir
+cat << EOF
+
+(1) ver formatos en servidor
+(2) descargar miniatura
+(3) descargar video
+(4) descargar video a resolucion por defecto
+(5) descargar parte de video
+(9) descargar parte de video sin audio
+(6) descargar parte de audio
+(7) descargar lista reproduccion
+(8) descargar metadatos (json)
+(9) descargar audio solo
+
+EOF
+printf "opcion: " && read -r opcion
+case $opcion in
+	"1") youtube-dl -F "$var";;
+	"2") youtube-dl --write-thumbnail --skip-download "$var";;
+	"3") youtube-dl -F "$var" && printf "pon codigo (primero del video, luego audio): " && read -r codigo \
+		&& youtube-dl -4 -f "$codigo" "$var" \
+		&& notify-send "video descargado en $dir";;
+	"4") youtube-dl "$var";;
+	" ") youtube-dl -g "$var" | awk '{ if(NR==1) print $0 }' | sed "s/^/'/;s/$/'/" | xargs -I {} ffmpeg -i "{}" -c:v copy -ss 0 -t 10 pruebar.mp4;;
+	"5") youtube-dl -F "$var" && printf "elige resolucion: " && read -r resol && printf "desde donde quieres cortar (inicio)? " && read -r inicio \
+		&& printf "hasta donde quieres cortar? " && read -r fin && youtube-dl -f "$resol" -g "$var"| 
+		awk '{ if(NR==1) print $0 }' | sed "s/^/'/;s/$/'/" | xargs -I {} ffmpeg -hide_banner -i "{}" -c:v libx264 -ss $inicio -to $fin /tmp/$tiempo.mkv;;
+	"6") printf "comienzo: " && read -r com && printf "fin: " && read -r fin && youtube-dl -g "$var" |
+		awk '{ if(NR==2) print $0 }' | sed "s/^/'/;s/$/'/" | xargs -I {} ffmpeg -hide_banner -i "{}" -ss "$com" -to "$fin" $dir$tiempo.mp3;;
+	"7") youtube-dl -i $dir$tiempo"%(title)s.%(ext)s" "$var" ;;
+	"8") youtube-dl --write-info-json "$var";;
+	"9") youtube-dl -F "$var" | grep 'audio' && printf "pon codigo: " && read -r codigo \
+		&& youtube-dl -f "$codigo" "$var" \
+		&& notify-send "video descargado en $dir";;
+	
+esac
+echo
+
+#ffplay -i "url"
+#add quotes between
+#sed 's/^/"/;s/$/"/'
+

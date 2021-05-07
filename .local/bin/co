@@ -1,0 +1,5 @@
+#!/bin/sh
+
+$("$@" | xclip -f -sel clip) >/dev/null 2>&1 #&& notify-send "`echo copiada la salida al portapaeles`"
+
+

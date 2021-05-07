@@ -1,0 +1,100 @@
+#!/bin/sh
+
+#curl -4 -sf https://raw.githubusercontent.com/iptv-org/iptv/master/README.md | awk '/http/ {print $3}'
+#curl -4 -sf https://raw.githubusercontent.com/iptv-org/iptv/master/README.md | awk '/http/' | tr -d ' '
+
+#curl -4 -sf https://raw.githubusercontent.com/iptv-org/iptv/master/README.md | awk '/http/' | sed -e 's/https\(.*\)m3u/\1/'
+dummy=/tmp/canales
+#curl -4 -sf https://raw.githubusercontent.com/iptv-org/iptv/master/README.md | awk '/http/' | grep -o -P '(?<=code>).*(?=</code)' | fzf --reverse --cycle | /usr/bin/mpv -
+opt="--ytdl-raw-options=force=ipv4="
+u_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
+#a=$(curl -4 -sf https://raw.githubusercontent.com/iptv-org/iptv/master/README.md | awk '/http/' | grep -o -P '(?<=code>).*(?=</code)' | fzf --reverse --cycle) && /usr/bin/mpv $a
+case $1 in
+	-es|es) a="$(curl -4 -sf 'https://www.tdtchannels.com/lists/tv.m3u' | grep -v '#')" && vent=$(xdo id) && xdo hide $vent
+		while true; do
+			b="$(echo "$a" | dmenu -i -l 30 -sb '#661a1a' -p 'television española')"
+			[ -z "$b" ] && xdo show $vent && exit || /usr/bin/mpv --really-quiet \
+				--user-agent "$u_agent" "$b" 
+		done &
+		;; #individuales
+	
+	-radio|-r) a="$(curl -4 -sf 'https://www.tdtchannels.com/lists/radio.m3u8' | grep -v '#')"
+		while true; do
+			b="$(echo "$a" | dmenu -i -l 30 -sb '#661a1a' -p 'television española')"
+				[ -z "$b" ] && exit || /usr/bin/mpv --really-quiet "$b" 2>/dev/null
+		done
+		;;
+	
+	--help|-h|h) printf "opciones son -es, -radio, --descargar, --lista -li\\n" ;;
+	
+	-d|--descargar) a=$(curl -4 -sf 'https://raw.githubusercontent.com/iptv-org/iptv/master/README.md'  |
+		awk '/http/' | grep -o -P '(?<=code>).*(?=</code)' | sed 's/<.*//' |
+		dmenu -i -l 30 -sb '#661a1a' -p 'television') && b=$(curl -4 -sf "$a" | grep -v '#') && /usr/bin/mpv --really-quiet $b ;;
+	
+	#--lista|-l|l) /usr/bin/mpv --profile=playlist $opt --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0" \
+	#	$(curl -4 -sf https://raw.githubusercontent.com/iptv-org/iptv/master/README.md | awk '/http/' |
+	#	grep -o -P '(?<=code>).*(?=</code)' | sed 's/<.*//'  | dmenu -i -l 30 -p television -sb '#661a1a' ) >/dev/null & ;;
+	--lista|-l|l) b="$(curl -4 -sf https://raw.githubusercontent.com/iptv-org/iptv/master/README.md | grep 'http' |
+		grep -o -P '(?<=code>).*(?=</code)' | sed 's/<.*//')" #&& vent=$(xdotool getactivewindow) && xdotool windowunmap $vent #kill $vent
+		vent=$(xdo id) && xdo hide $vent
+		while true; do
+			#c="$(echo "$b" | dmenu -i -l 30 -p television -sb '#661a1a' )"
+			c="$(echo "$b" | /usr/local/bin/dmenu -i -l 30 -p television  -sb '#7a998d' -nb '#262626' )"
+			[ -z "$c" ] && xdo show $vent && exit
+			/usr/bin/mpv --really-quiet --profile=playlist \
+				$opt --user-agent "$u_agent" "$c"
+				#&& xdo show $vent #>/dev/null 2>&1
+			#[ -z "$c" ] && xdotool windowmap $vent && exit
+		done & 
+		;;
+	
+	--li|-li|li) /usr/bin/mpv --profile=playlist $opt --user-agent "$u_agent" \
+		$(curl -4 -sf  'https://www.tdtchannels.com/lists/tv.w3u' | jq '.groups[].stations[] | "\(.name) \(.url)"' |dmenu -i -l 30 -p television -sb '#661a1a' ) >/dev/null & ;;
+	#*|--) a=$(curl -4 -sf 'https://raw.githubusercontent.com/iptv-org/iptv/master/README.md'  | awk '/http/' | grep -o -P '(?<=code>).*(?=</code)' | sed 's/<.*//' | dmenu -i -l 30 -sb '#661a1a' -p 'television') && b=$(curl -4 -sf "$a" | grep -v '#') && /usr/bin/mpv $b ;;
+	#*) printf "opciones son -es, -radio, --descargar, --lista -li\\n" ;;
+esac
+#a=$(curl -4 -sf https://raw.githubusercontent.com/iptv-org/iptv/master/README.md | awk '/http/' | grep -o -P '(?<=code>).*(?=</code)' | sed 's/<.*//'  | dmenu -i -l 30 -p television -sb '#661a1a' ) && /usr/bin/mpv $a
+
+[ -n "$1" ] && exit
+
+#a=$(curl -4 -sf https://raw.githubusercontent.com/iptv-org/iptv/master/README.md | awk '/http/' | grep -o -P '(?<=code>).*(?=</code)' | sed 's/<.*//'  | dmenu -i -l 30 -p television -sb '#661a1a' ) && /usr/bin/mpv $a
+
+#/usr/bin/mpv $(curl -4 -sf https://raw.githubusercontent.com/iptv-org/iptv/master/README.md | awk '/http/' | grep -o -P '(?<=code>).*(?=</code)' | sed 's/<.*//'  | dmenu -i -l 30 -p television -sb '#661a1a' )
+
+#curl -4 -sf https://iptv-org.github.io/iptv/channels.json | jq '.[] | "\(.name)"  | tr -d '"' |  | tr -d '"' | dmenu -l 30
+#a=$(curl -4 -sf https://iptv-org.github.io/iptv/channels.json | jq '.[] | "\(.name) \(.url)"' | tr -d '"') | dmenu -l 30 | sed 's/http.*//' > proba.txt
+
+#a=$(curl -4 -sf https://iptv-org.github.io/iptv/channels.json | jq '.[] | "\(.name) \(.url)"' | tr -d '"') && b=$(echo "$a" | dmenu -i -l 30 -p 'canal')  && echo "$b" | awk '{print $NF}' > proba.txt
+
+#[ ! -f $dummy ] && curl -4 -sf https://iptv-org.github.io/iptv/channels.json | jq '.[] | "\(.name) \(.url)"' | tr -d '"' > $dummy
+#[ ! -f $dummy ] && 
+#curl -4 -sf https://iptv-org.github.io/iptv/channels.json | jq '.[] | "\(.name) \(.url)"'| tr -d '"' > $dummy
+
+#eso=$(awk '{print NR,$0}' $dummy | sed 's/http.*//' | dmenu -l 30 | awk '{print $1}') && awk '{print NR,$0}' $dummy | grep $eso $dummy
+
+#curl -4 -sf https://iptv-org.github.io/iptv/channels.json | jq '.[] | "\(.url)"' | tr -d '"' > $dummy
+#[ ! -f $dummy ] && curl -4 -sf https://iptv-org.github.io/iptv/channels.json | jq '.[] | "\(.name) \(.url)"' | tr -d '"' > $dummy
+
+#campo=$(cat $dummy | sed 's/http.*//' | dmenu -i -l 30 -sb '#661a1a' -p 'canal' 2>/dev/null) && grep -n "$campo" $dummy #| awk '{print $NF}'
+
+#echo $campo
+
+#mpv --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0" \
+#"$(curl -4 -sf https://iptv-org.github.io/iptv/channels.json | jq '.[] | "\(.name) \(.url)"' | tr -d '"' \
+#| dmenu -i -l 30 -sb '#661a1a' -p 'canal' -fn 'Ubuntu Mono' | awk '{print $NF}')" 2>&1 /dev/null &
+a="$(curl -4 -sf https://iptv-org.github.io/iptv/channels.json | jq '.[] | "\(.name) \(.url)"' | tr -d '"')"
+
+while true; do
+	b="$(echo "$a" | dmenu -i -l 30 -sb '#661a1a' -p 'canal' -fn 'Ubuntu Mono' | awk '{print $NF}')" && [ -z "$b" ] && exit
+	mpv --really-quiet --user-agent "$u_agent" $opt "$b" #>/dev/null 2>&1 #individuales
+	#[ -z "$b" ] && exit
+done &
+
+#a="$(curl -4 -sf https://iptv-org.github.io/iptv/channels.json | jq '.[] | "\(.name) \(.url)"' | tr -d '"' \
+#| dmenu -i -l 30 -sb '#661a1a' -p 'canal' -fn 'Ubuntu Mono' | awk '{print $NF}')" && [ -n "$a" ] &&
+#mpv --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0" $opt "$a" 2>&1 /dev/null & #individuales
+
+
+#a="$(curl -4 -sf https://iptv-org.github.io/iptv/channels.json | jq '.[] | "\(.name) \(.url)"' | tr -d '"' \
+#| fzf --reverse --cycle | awk '{print $NF}')" && [ -n "$a" ] &&
+#mpv --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0" $opt "$a" 2>&1 /dev/null & #individuales

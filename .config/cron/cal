@@ -1,0 +1,9 @@
+#!/bin/sh
+
+[ -z "$(calcurse -a --days 7)" ] && exit
+
+while ! pidof -q dunst; do
+	sleep 2
+done
+
+notify-send -i /usr/share/icons/papiru*/24x24/categories/office-calendar.png "$(calcurse -a --days 7)"

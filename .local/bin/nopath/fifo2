@@ -1,0 +1,7 @@
+#!/bin/sh
+
+[ ! -e /tmp/volumen ] && mkfifo /tmp/volumen
+tail -f /tmp/volumen | xob -s vol 1>/dev/null &
+
+#[ ! -e /tmp/brillo ] && mkfifo /tmp/brillo
+#tail -f /tmp/brillo | xob -s brightness 1>/dev/null &

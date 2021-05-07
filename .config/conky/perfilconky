@@ -1,0 +1,75 @@
+
+# set to yes if you want Conky to be forked in the background
+background yes
+short_units yes
+cpu_avg_samples 2
+out_to_console no
+
+# X font when Xft is disabled, you can pick one with program xfontsel
+font 6x10
+
+# Use Xft?
+use_xft yes
+
+# Xft font when Xft is enabled
+xftfont DejaVu Sans:bold:size=9
+
+# Create own window instead of using desktop (required in nautilus, pcmanfm and rox desktops)
+own_window yes
+own_window_transparent no
+own_window_hints undecorated,below,sticky,slip_taskbar
+own_window_type panel
+own_window_colour 101010
+
+# Text alpha when using Xft
+xftalpha 1.0
+
+#on_bottom no
+# Update interval in seconds
+update_interval 2
+
+# Use double buffering (reduces flicker, may not work for everyone)
+double_buffer yes
+
+# Minimum size of text area
+minimum_size 5 5
+maximum_width 500
+draw_shades no
+border_inner_margin 0
+border_outer_margin 0
+#draw_outline yes
+
+# Draw borders around text
+draw_borders no
+#stippled_borders 0
+#border_margin 10
+
+# border width
+border_width 0
+
+# Default colors and also border colors
+default_color 353535
+
+color7 353535
+color1 3D7582
+color3 59C6DC
+color5 197D91
+
+# Text alignment, other possible values are commented
+alignment top_right
+
+# Gap between borders of screen and text
+gap_x 20
+gap_y 0
+
+# Add spaces to keep things from moving about?  This only affects certain objects.
+use_spacer right
+
+# Subtract file system buffers from used memory?
+no_buffers yes
+
+# set to yes if you want all text to be in uppercase
+uppercase no
+
+TEXT
+${color5}◑  ${alignr}${color3}${cpu}${color3}%${color3}  ⛃ ${alignr}$mem ${color3} ◖⚟${exec amixer -c 0 get Master | grep Mono: | cut -d " " -f6}  ƭ ${hwmon 0 temp 1}°C  ${time %I:%M} ${color3}${alignc}

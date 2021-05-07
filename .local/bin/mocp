@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/usr/bin/mocp --moc-dir $HOME/.config/moc 

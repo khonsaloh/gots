@@ -1,0 +1,14 @@
+$HOME
+$XDG_CONFIG_HOME
+/usr/share/wallpaper
+/usr/local/bin
+/tmp
+$HOME/.cache
+$HOME/descargas
+/media/usb
+$HOME/.local/bin
+$HOME/descargas/build
+$HOME/scripts
+$HOME/scripts/bak"
+$HOME/mm
+$HOME/doc

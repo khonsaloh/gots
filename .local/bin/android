@@ -1,0 +1,10 @@
+#!/bin/sh
+jmtpfs -l
+a=$(/usr/bin/df | awk '/jmtpfs/ { print $6}')
+
+[ -z "$a" ] && sudo jmtpfs -o allow_other /media/android || sudo fusermount -u /media/android
+
+b=$(df | awk '/jmtpfs/ { print $6}')
+
+[ -z "$b" ] && notify-send "$(echo android desmontado)" || notify-send "$(echo android montado)"
+

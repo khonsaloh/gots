@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# script para la captura de datos de red
+
+#start="$(($(cat /sys/class/net[ew]*/statistics/rx_bytes | paste -sd '*' )))"
+inicio="$(($(cat /sys/devices/pci0000:00/0000:00:1c.0/0000:02:00.0/net/wlan0/statistics/rx_bytes | paste -sd '*' )))"
+printf "registrando datos de descarga, presiona enter para parar "
+read -r banda
+fin="$(($(cat /sys/devices/pci0000:00/0000:00:1c.0/0000:02:00.0/net/wlan0/statistics/rx_bytes | paste -sd '*' )))"
+#fin="$(($(cat /sys/class/net[ew]*/statistics/rx_bytes | paste -sd '*' )))"
+printf "%4sB de red usada.\\n" $(numfmt --to=iec $(($fin-$inicio)))

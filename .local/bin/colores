@@ -1,0 +1,55 @@
+#!/bin/sh
+
+a=$( dmenu -i -l 30 -p 'elige color para codigo ansi' << EOF
+rojo
+verde
+nocolor
+Default
+negro
+Red
+Green
+amarillo
+azul
+violeta
+Cian
+blanco
+fdefault
+fnegro
+frojo
+fverde
+famarillo
+#bblue
+fazul
+fvioleta
+fcian
+fblanco
+EOF
+)
+
+case $a in
+	"rojo") echo 'rojo="\033[0;31m"' | xclip -r -sel clip && notify-send "copiado al portapapeles" ;;
+	"verde") echo 'verde="\033[0;32m"' | xclip -r -sel clip && notify-send "copiado al portapapeles" ;;
+	"nocolor") echo nc='\e[0m' | xclip -r -sel clip && notify-send "copiado al portapapeles" ;;
+	"Default") echo Default='\e[0;39m' | xclip -r -sel clip && notify-send "copiado al portapapeles";;
+	"negro") echo negro='\e[0;30m' | xclip -r -sel clip && notify-send "copiado al portapapeles";;
+	"Red") echo Red='\e[0;31m' | xclip -r -sel clip && notify-send "copiado al portapapeles";;
+	"Green") printf Green='e[0;32m' | xclip -r -sel clip && notify-send "copiado al portapapeles" ;;
+	"amarillo") echo amarillo='\e[0;33m' | xclip -r -sel clip && notify-send "copiado al portapapeles" ;;
+	"azul") echo 'azul="\e[0;34m"' | xclip -r -sel clip && notify-send "copiado al portapapeles";;
+	"violeta") echo violeta='\e[0;35m' | xclip -r -sel clip && notify-send "copiado al portapapeles";;
+	"Cian") echo Cian='\e[0;36m' | xclip -r -sel clip && notify-send "copiado al portapapeles";;
+	"blanco") echo blanco='\e[0;37m' | xclip -r -sel clip && notify-send "copiado al potapapeles";;
+	"fdefault") echo fdefault='\e[49m' | xclip -r -sel clip && notify-send "copiado al portapapeles";;
+	"fnegro") echo fnegro='\e[40m' | xclip -r -sel clip && notify-send "copiado al potapaeles";;
+	"frojo") echo frojo='\e[41m' | xclip -r -sel clip && notify-send "copiado al portapapeles";;  
+	"fverde") echo fverde='\e[42m' | xclip -r -sel clip && notify-send "copiado al portapapeles";;
+	"famarillo") echo famarillo='\e[43m' | xclip -r -sel clip && notify-send "copiado al portapapeles";;
+	#bblue
+	"fazul") echo fazul='\e[44m' | xclip -r -sel clip && notify-send "copiado al portapapeles";;
+	"fvioleta") echo fvioleta='\e[45m' | xclip -r -sel clip && notify-send "copiado al portapapeles";;
+	"fcian") echo fcian='\e[46m' | xclip -r -sel clip && notify-send "copiado al portapapeles";;
+	"fblanco") echo fblanco='\e[47m' | xclip -r -sel clip && notify-send "copiado al portapapeles";;
+esac
+
+#ejemplo
+#printf '%s$red hola %s$green que tal\\n'"

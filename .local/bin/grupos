@@ -1,0 +1,2 @@
+#!/bin/sh
+clear && column /etc/group -t -s ":" | less -R | column

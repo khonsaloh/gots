@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=fuentes
+Exec=fontpreview %u
+#NoDisplay=true
+MimeType=font/ttf
+Terminal=true
+#X-KeepTerminal=true

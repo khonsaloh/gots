@@ -1,0 +1,14 @@
+#!/bin/sh
+
+vol=$(amixer sget Master | awk '/%/ {print $4}' | tr -d '[%]')
+mute=$(amixer sget Master | awk '/%/ {print $6}' | tr -d '[]')
+
+if [ "$mute" = "off" ]; then
+	echo "  mute"
+elif [ "$vol" -gt 70 ]; then
+	echo "  $vol%"
+elif [ "$vol" -gt 35 ]; then
+	echo "  $vol%"
+else
+	echo "  $vol%"
+fi

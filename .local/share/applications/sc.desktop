@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Spreadsheet
+Comment=Use the command line
+TryExec=sc
+NoDisplay=False
+Exec=sc
+Icon=terminal
+Type=Application
+Categories=Utility;TerminalEmulator;
+StartupNotify=true
+Keywords=Run;
+Actions=New
+
+[Desktop Action New]
+Name=Simple Terminal
+Exec=sc
+OnlyShowIn=Unity

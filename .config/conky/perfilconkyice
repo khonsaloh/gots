@@ -1,0 +1,99 @@
+# Note: delete the line above to disable automatic scaling with DPI
+# set to yes if you want Conky to be forked in the background
+background yes
+short_units yes
+cpu_avg_samples 2
+out_to_console no
+
+# X font when Xft is disabled, you can pick one with program xfontsel
+ font 8x12
+
+# Use Xft?
+use_xft yes
+
+# Xft font when Xft is enabled
+xftfont DejaVu Sans:bold:size=9
+
+# Create own window instead of using desktop (required in nautilus, pcmanfm and rox desktops)
+own_window yes
+own_window_transparent yes
+own_window_hints undecorated,below,sticky,skip_taskbar
+own_window_type desktop
+
+# Text alpha when using Xft
+xftalpha 1.0
+#on_bottom no
+# mail spool
+#mail_spool $MAIL
+
+# Update interval in seconds
+update_interval 2
+
+# Use double buffering (reduces flicker, may not work for everyone)
+double_buffer yes
+
+# Minimum size of text area
+minimum_size 5 5
+maximum_width 180
+
+# Draw shades?
+draw_shades no
+
+# Draw outlines?
+draw_outline no
+
+# Draw borders around text
+draw_borders no
+
+# Stippled borders?
+stippled_borders 0
+
+# border margins
+#border_margin 10
+
+# border width
+border_width 2
+
+# Default colors and also border colors
+default_color white
+#default_shade_color white
+default_outline_color white
+
+color3 ffffff
+color4 yellow
+color8 77ccff
+color9 5599cc
+
+# Text alignment, other possible values are commented
+alignment top_right
+
+# Gap between borders of screen and text
+gap_x 20
+gap_y 40
+
+# Add spaces to keep things from moving about?  This only affects certain objects.
+use_spacer right
+
+# Subtract file system buffers from used memory?
+no_buffers yes
+
+# set to yes if you want all text to be in uppercase
+uppercase no
+
+# boinc (seti) dir
+# seti_dir /opt/seti
+
+# stuff after 'TEXT' will be formatted on screen
+TEXT
+${color}${alignc}gon
+${color}ℵ${alignr}${color3}${execi 60 xdpyinfo | sed -n -r "s/^\s*dimensions:.*\s([0-9]+x[0-9]+).*/\1/p"}
+${color}α${alignr}${color3}${execi 60 sed -nr "s/^\s*Xft.dpi:\s*([0-9]+(x[0-9]+)?).*/\1/p" $HOME/.Xresources | grep "[0-9]" || echo 96}
+#${color}Heat:${alignr}${color3}cpu_temp=$(< /sys/class/thermal/thermal_zone0/temp); cpu_temp=$(($cpu_temp/1000));echo $cpu_tempºC
+${color}ϟ${alignr}${color3}${diskio}
+#grafico del uso de disco
+${color}${alignr}${diskiograph 30,170 5599cc 5599cc}${if_up eth0}
+${color}${alignr}${color8}λ λ λ λ λ λ λ λ λ λ λ λ λ 
+${color}✻${alignr}${color3}${cpu}${color}%
+${color}ʊ${alignr}$mem ${color3} /${color} $memmax
+${color}◕${alignr}${fs_used /} ${color3} /${color} ${fs_size /}
+#${execi 1000 acpi 2>/dev/null | grep -q . && echo "Batt: "}${execi 10 acpi -b 2>/dev/null | cut -d" " -f3,4 | sed 's/,$//'}

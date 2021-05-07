@@ -1,0 +1,6 @@
+#!/bin/sh
+
+#ip addr | awk '/state UP/ {print $2}'
+red=ip addr | awk '/192/'
+[ $red ] && echo 'hola'
+

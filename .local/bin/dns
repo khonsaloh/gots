@@ -1,0 +1,15 @@
+#!/bin/sh
+
+sudo cat /etc/resolv.conf
+echo
+a=$(printf "1.1.1.1\\n1.0.0.1\\n8.8.8.8\\n8.8.4.4\\n" | fzf -m --height=10)
+[ -z "$a" ] && exit 1
+printf "aplicar?:(s/n) " && read -r app
+[ ! "$app" = "s" ] && exit
+sudo cp /dev/null /etc/resolv.conf
+for i in $a; do
+	echo "nameserver $i" |sudo tee -a /etc/resolv.conf 
+done
+sudo pkill wpa_supplicant \
+	&& sleep 1 && sudo /etc/init.d/networking restart || exit
+

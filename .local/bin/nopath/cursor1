@@ -1,0 +1,13 @@
+#!/bin/bash
+
+a=$(printf "bloque parpadeante\\nbloque estatico\\nraya parpadeante\\nraya estatica\\nbarra fina parpadeante\\nbarra fina estatica\\n" | fzf --cycle --height=10)
+	case $a in
+		"bloque parpadeante") echo -e -n "\x1b[\x30 q";; # changes to blinking block
+		"") echo -e -n "\x1b[\x31 q";; # changes to blinking block also
+		"bloque estatico") echo -e -n "\x1b[\x32 q";; # changes to steady block
+		"raya parpadeante") echo -e -n "\x1b[\x33 q";; # changes to blinking underline
+		"raya estatica") echo -e -n "\x1b[\x34 q";; # changes to steady underline
+		"barra fina parpadeante") echo -e -n "\x1b[\x35 q";; # changes to blinking bar
+		"barra fina estatica") echo -e -n "\x1b[\x36 q";; # changes to steady bar
+esac
+

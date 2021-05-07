@@ -1,0 +1,43 @@
+# ~/.profile: executed by the command interpreter for login shells.
+# the default umask is set in /etc/profile; for setting the umask
+# for ssh logins, install and configure the libpam-umask package.
+#umask 022
+
+export PATH=$HOME/.local/bin:$PATH
+export EDITOR=vim
+export BROWSER='firefox-esr'
+export LESSHISTFILE="-"
+export TERMINAL="st"
+export CLICOLOR_FORCE=true
+export LESS=-R
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME=${XDG_DATA_HOME:="$HOME/.local/share"}
+export XDG_CACHE_HOME=${XDG_CACHE_HOME:="$HOME/.cache"}
+export URXVT_PERL_LIB="$XDG_CONFIG_HOME/urxvt/ext"
+#export DVDCSS_CACHE="$XDG_DATA_HOME"/dvdcss
+export DVDCSS_CACHE="$XDG_CACHE_HOME"/dvdcss
+export GTK_RC_FILES="$XDG_CONFIG_HOME"/gtk-1.0/gtkrc
+export GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc-2.0
+export VIMINIT="source ~/.config/vimrc"
+export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority" # This line will break some DMs.
+export SUDO_ASKPASS="$HOME/.local/bin/nopath/dmenupass"
+#export NOTMUCH_CONFIG="$XDG_CONFIG_HOME"/notmuch/notmuchrc
+#export GNUPGHOME=""
+export GNUPGHOME="$XDG_DATA_HOME"/.gnupg
+#export MBSYNCRC="${XDG_CONFIG_HOME:-$HOME/.config}/mbsync/config"
+export ZDOTDIR=$HOME/.config/zsh
+export BROWSER2="navegador"
+export FZF_DEFAULT_OPTS='--reverse --cycle'
+
+export LESS_TERMCAP_mb=$'\e[1;32m'
+export LESS_TERMCAP_md=$'\e[1;32m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[01;33m'
+export LESS_TERMCAP_ue=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[1;4;31m'
+export WGETRC="${XDG_CONFIG_HOME:-$HOME/.config}/wget/wgetrc"
+export PASSWORD_STORE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/.password-store"
+#export STARSHIP_CONFIG="$HOME/.config/shell/starship.toml"
+source ~/.config/lf/coloremoji
+

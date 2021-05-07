@@ -1,0 +1,14 @@
+#!/bin/sh
+[ -n "$1" ] && case "$1" in
+	*.mp3|*.opus|*.ogg|*.flac|*.webm|*.wav) /usr/bin/mpv "$1";;
+	*.jpg|*.png) tragar sxiv "$1";;
+	*) tragar mpv "$1";;
+esac
+[ -n "$1" ] && exit 
+a=$(find *.flv *.webm *.webp *.wav *.opus *.avi *.mp4 *.mp3 *.ogg *.flac *.mpg *.mkv -type f 2>/dev/null | 
+fzf --cycle --reverse) && [ -n "$a" ] && 
+case $a in
+	*.mp3|*.opus|*.ogg|*.flac|*.webm|*.wav) /usr/bin/mpv "$a";;
+	*) tragar mpv "$a";;
+esac
+

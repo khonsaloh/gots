@@ -1,0 +1,21 @@
+#!/bin/sh
+
+rssfile=$HOME/.local/share/ytrss.txt 
+[ -n "$1" ] && case $1 in
+	-a|-e) $EDITOR $rssfile ;;
+	-d|-r) a="$(cat $rssfile | fzf --reverse --cycle --prompt='eliminar entrada:' )" \
+				&& sed -i "/$a/d" $rssfile;;
+esac
+
+[ -n "$1" ] && exit
+a=$( grep -v '^#'  $rssfile | fzf --reverse --cycle)
+url=$(echo $a | rev | cut -d' ' -f1 | rev)
+
+folder=/tmp/lista_reproduccion.txt
+
+[ -z "$a" ] && exit 1
+[ ! -f "$folder" ] && touch  "$folder"
+
+#vent=$(xdotool getactivewindow getwindowpid) && kill $vent
+#$HOME/descargas/build/xdo close
+curl -sf -4 "$url"| awk '/watch/ {print $3}' | sed 's/href="//;s/.\{3\}$//' > $folder && playlist

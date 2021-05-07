@@ -1,0 +1,5 @@
+#!/bin/sh
+notify-send "reproduciendo dvd" -i /usr/share/icons/papir*/48x48/apps/frozen-bubble.png;
+#setsid -f mpv dvd://0 --alang=es > /dev/null 2>&1
+a=$(xdo id) && xdo hide $a && mpv --really-quiet dvd://0 --alang=es && xdo show $a 
+#mpv --really-quiet dvd://0 --alang=es &

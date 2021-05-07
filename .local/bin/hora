@@ -1,0 +1,6 @@
+#!/bin/sh
+
+date +%H:%M \
+	&& [ -n "$1" ] && echo 'tiempo=$(date +%Y%m%d%H%M%S)'|
+	xclip -r -sel clip && notify-send "variable copiada al portapapeles"
+

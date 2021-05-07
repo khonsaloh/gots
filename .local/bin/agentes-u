@@ -1,0 +1,19 @@
+#!/bin/sh
+
+a=$( dmenu -l 10  -sb '#7a998d' -nb '#262626' << EOF
+android 7
+firefox windows 10
+chrome windows 10
+firefox linux
+chrome linux
+EOF
+)
+
+case $a in
+	"chrome windows 10") echo '"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"' | xclip -r -sel  clipboard;;
+	"firefox windows 10") echo '"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0"' | xclip -r -sel clipboard;;
+	"firefox linux") echo '"Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101 Firefox/78.0"' \
+		| xclip -r -sel clipboard;;
+	"chrome linux") echo '"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.193 Safari/537.36"' | xclip -r -sel clipboard;;
+	"android 7") echo '"Mozilla/5.0 (Linux; Android 7.0; SM-G892A Build/NRD90M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/67.0.3396.87 Mobile Safari/537.36"' | xclip -r -sel clipboard;;
+esac

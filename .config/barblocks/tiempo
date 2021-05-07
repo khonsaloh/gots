@@ -1,0 +1,5 @@
+#!/bin/sh
+
+curl -sf -4 wttr.in/negreira | grep -v 'Follow' | less -SR
+read
+echo eso

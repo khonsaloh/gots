@@ -1,0 +1,30 @@
+#!/bin/sh
+
+cat <<EOF | xmenu | sh &
+Gestor archivos		pcmanfm
+Aplicaciones
+	IMG:/usr/share/icons/papirus-antix/24x24/categories/firefox-nightly.png	Navegador	firefox
+	IMG:/usr/share/icons/papirus-antix/24x24/categories/aptdaemon-download.png	Torrentes	st -e rtorrent
+	IMG:./icons		Particiones	st -e sudo cfdisk
+	IMG:./icons		Quemador disco	st -e cdw
+	IMG:./icons		Irc		st -e irssi
+	IMG:./icons		Recuperacion forense	st -e sudo testdisk
+	IMG:./icons		Hoja de calculo	st -e sc
+	IMG:./icons		Temas y apariencia	lxappearance
+	IMG:./icons		Imagen			st -e display .
+Color			color
+Montar/Desmontar	$HOME/.config/barblocks/montaje2
+lf			. $HOME/.zshrc && . $HOME/descargas/profile1 && st -c f-terminal -e lf
+Procesador Textos	libreoffice
+Red			
+	Hombre en el medio	ettercap
+	Cortafuegos		$HOME/scripts/sec
+Cambiar Tema Polybar	(find $HOME/.config/polybar/con* -type f | dmenu -i -l 5 >$HOME/.local/share/polybar.txt && $HOME/.config/polybar/launch.sh)
+
+Cerrar session		kill -9 -1
+Apagar			sudo poweroff
+Apagado programado	$HOME/.config/barblocks/temporizador	a los 30 mim
+Reiniciar		sudo reboot
+EOF
+
+

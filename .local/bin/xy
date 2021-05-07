@@ -1,0 +1,4 @@
+#!/bin/sh
+
+xdotool getmouselocation|sed 's/x:\(.*\) y:\(.*\) screen:.*/\1, \2/' |
+	xclip -r -sel clip | notify-send "`xclip -o -sel clip`" --urgency=low

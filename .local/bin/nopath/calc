@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+menu="$(command -v dmenu) ""$DMENU_OPTIONS"
+
+answer=$(echo "$@" | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//')
+
+action=$(printf "Copy to clipboard\nClear\nClose" |
+$menu -p "calc = $answer")
+
+case $action in
+    "Clear") $0 ;;
+    "Copy to clipboard") echo -n "$answer" | xclip -selection clipboard ;;
+    "Close") ;;
+    "") ;;
+    *) $0 "$answer $action" ;;
+esac

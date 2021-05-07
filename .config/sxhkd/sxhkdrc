@@ -1,0 +1,158 @@
+
+super + button1
+	~/.config/bspwm/scripts/w_drag
+
+# ajuste de gaps 
+super + {plus,minus,equal}
+	~/.config/bspwm/scripts/gaps {plus,minus,equal}
+
+Home
+	notify-send -t 2000 "pantallazo en 2 segundos ..." \
+	&& scrot --delay 2 $HOME/mm/$(date +%Y%m%d%H%M%S).png \
+	&& notify-send -t 2000 "captura guardada en mm"
+
+# calculadora
+super + c
+	$HOME/.local/bin/nopath/calc
+
+# terminal emulator
+super + {_, alt + , shift + } Return
+	{st, $HOME/descargas/st, \
+	$HOME/.local/bin/nopath/tdrop -ma -w 1360 -y 0 st} 
+
+super + {ntilde, m}
+	{passmenu --type, $HOME/.local/bin/bookmarker}
+
+super + b
+	{polybar-msg cmd toggle; bspc config top_padding +0 ,\
+         polybar-msg cmd toggle; bspc config top_padding 25 }
+
+super + dead_grave
+	notify-send "`xclip -o -sel clip`" --urgency=low || \ 
+	notify-send "`echo portapapeles sin contenido`" --urgency=low
+
+# rotar hojas de arbol
+super + {_, shift} @space
+	{bspc node @/ -R 180, bspc node @/ -R 90}
+
+# navegadores
+super + {_, shift + } w
+	{firefox-esr, navegador}
+
+#teclas de funcion
+
+XF86MonBrightness{Down,Up}
+	$HOME/scripts/brillo {abajo,arriba}
+
+XF86Audio{Stop,Play}
+	{killall mocp && notify-send -t 2000 "reproductor de musica terminado", \
+ 	pidof mocp && mocp -G || mocp -S \
+	&& mocp -l $HOME/mm/*.mp3 $HOME/mm/*.webm}
+
+XF86Audio{Next,Prev}
+	mocp {-f,-r} 
+
+{super + Menu, Menu}
+	{. $HOME/.zshrc && st -c f-terminal -e lf, $HOME/descargas/st -e htop}
+
+super + F6
+	slimlock
+super + F4
+	$HOME/.local/bin/nopath/comp
+super + F3
+	urxvt -e rsr.sh && notify-send -t 2000 "reiniciada conexion de red"
+super + Delete
+	sudo poweroff
+
+#close window
+{super + Shift_R, Shift_R}
+	{bspc node --close, bspc node --close}
+
+# program launcher
+super + p
+	dmenu_run
+
+#reiniciar gestor de atajos y gestor de ventanas
+# reinicar sxhkd
+super + r
+	pkill -USR1 -x sxhkd
+
+super + f
+	$HOME/.local/bin/nopath/crystal --fullscreen
+
+# swap the current node and the biggest node
+super + {g,shift + g}
+	bspc node -s {biggest, biggest.local}
+
+super + {shift + t,f}
+	bspc node -t {pseudo_tiled,fullscreen}
+
+super + t
+	bspc node focused.tiled -t floating || bspc node -t tiled 
+
+super + s
+	bspc node -g sticky
+
+# focus the node in the given direction
+super + {_,shift + }{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+
+super + {i,o}
+	bspc desktop -f {prev,next}.occupied.local
+
+super + shift + {i,o}
+	bspc desktop -f {prev,next}.local
+
+super + Tab
+	bspc desktop -f last
+
+# focus or send to the given desktop
+super + {_,shift + }{1-9,0}
+	bspc {desktop -f,node -d} '^{1-9,10}'
+
+# preselect the direction
+super + ctrl + {h,j,k,l}
+	bspc node -p {west,south,north,east}
+
+# preselect the ratio
+super + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+# cancel the preselection for the focused node
+super + ctrl + space
+	bspc node -p cancel
+
+super + alt + {Left,Down,Up,Right}
+	$HOME/.config/bspwm/scripts/resize {west,south,north,east}
+
+# move a floating window
+super + {Left,Down,Up,Right}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+#ajuste volumen
+super +  shift + {Up,Down}
+	amixer sset Master {5%+,5%-} 1>/dev/null && $HOME/.local/bin/nopath/fifo
+
+XF86Audio{RaiseVolume,LowerVolume,Mute}
+	amixer sset Master {5%+,5%-,toggle} 1>/dev/null \
+	&& $HOME/.local/bin/nopath/fifo
+
+# focus the next/previous node in the current desktop
+super + {_,shift + }n
+	bspc node -f {next,prev}.local
+
+alt + 4
+	notify-send "reproduccion de media a un maximo de 480px" \
+	-i /usr/share/icons/papirus-antix/48x48/apps/kubeplayer.png \ 
+	; mpv --really-quiet --profile=youtube \
+	--user-agent="Mozilla/5.0 (X11; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0" \
+	'--ytdl-format=bestvideo[height<=?480]+bestaudio/best' "$(xclip -o)" \ 
+	|| mpv "$(xclip -o)" || notify-send 'ha fallado la reproduccion'	
+
+alt + 3
+	notify-send "reproduccion de video a un maximo de 360px" \
+	-i /usr/share/icons/papirus-antix/48x48/apps/kubeplayer.png \ 
+	; mpv --really-quiet --profile=youtube \
+	--user-agent="Mozilla/5.0 (X11; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0" \
+	'--ytdl-format=bestvideo[height<=?360]+bestaudio/best' "$(xclip -o)" \ 
+	|| mpv "$(xclip -o)" || notify-send 'ha fallado la reproduccion'

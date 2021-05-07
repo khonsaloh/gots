@@ -1,0 +1,5 @@
+#!/bin/sh
+
+clear && [ -z "$1" ] && grc /usr/bin/ping -4 google.com -c 3 ||
+	grc /usr/bin/ping -4 "$1" -c 3
+

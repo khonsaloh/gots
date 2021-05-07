@@ -1,0 +1,3 @@
+#!/bin/sh
+
+pgrep compton >/dev/null && killall compton || compton --config $HOME/.config/bspwm/compton.conf & 

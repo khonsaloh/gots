@@ -1,0 +1,9 @@
+#!/bin/sh
+
+case $BLOCK_BUTTON in
+	3) $HOME/.config/barblocks/menu2;;
+	1) pcmanfm;;
+esac
+
+printf "📁🚦"
+

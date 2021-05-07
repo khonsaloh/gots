@@ -1,0 +1,29 @@
+#!/bin/sh
+bq=$(find . -type f -not -path "./.cache*" -not -path "./.mozilla*" -not -path "./.thumbnails*" 2>/dev/null | 
+	fzf --reverse --preview '([[ -f {} ]] && (bat --line-range :40 {} --style=numbers --color=always {} || 
+	cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | 
+	head -40' --color='hl:148,hl+:154,pointer:032,marker:010,bg+:237')
+[ -z "$bq" ] && exit 1
+case $bq in
+	*.mp4) tragar mpv --really-quiet "$bq";; 
+	*.mpg) tragar mpv --really-quiet "$bq";; 
+	*.mp3) mpv "$bq";; 
+	*.avi) tragar mpv --really-quiet "$bq";; 
+	*.ogg) mpv "$bq";; 
+	*.flac) mpv "$bq";; 
+	*.opus) mpv "$bq";; 
+	*.png) tragar sxiv "$bq";; 
+	*.jpg) tragar sxiv "$bq";; 
+	*.pdf) tragar zathura "$bq" 2>/dev/null &;;
+	*.epub) tragar zathura "$bq";;
+	*.gpg) gpg -d "$bq";;
+	*.asc) gpg -d "$bq";;
+	*.webm) mpv "$bq";;
+	*.ttf) /usr/bin/display "$bq";;
+	*.otf) /usr/bin/display "$bq";;
+	*.docx) libreoffice "$bq" &;;
+	*.gif) tragar sxiv -a "$bq" ;;
+	*.odt) libreoffice "$bq" &;; 
+	*) vim "$bq";; 
+esac
+

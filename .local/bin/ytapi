@@ -1,0 +1,20 @@
+#!/bin/sh
+
+[ -z "$1" ] && printf "pon terminos a buscar\\n" && exit
+
+query="$(echo "$@" | tr ' ' '+')"
+
+KEY=$(cat $XDG_CONFIG_HOME/apis/youtube)
+
+urlstring="https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&maxResults=40&key=$KEY"
+
+a="$(curl -4 -sf "${urlstring}" \
+	|jq -r '.items[] | "\(.snippet.channelTitle) ==> \(.snippet.title) youtu.be/\(.id.videoId)"')"
+
+while true; do
+	[ -n "$vent" ] && xdo show $vent
+	b="$(echo "$a" | fzf --reverse --cycle --with-nth='1..-2' -m \
+		| rev | cut -d ' ' -f1 | rev)" && vent=$(xdo id) && xdo hide $vent \
+		&& [ -z "$b" ] && xdo show $vent && exit || /usr/bin/mpv --really-quiet '--ytdl-format=bestvideo[height<=?480]+bestaudio/best' "https://$b" #>/dev/null
+done 
+

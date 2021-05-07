@@ -10,11 +10,8 @@ fondo_escritorio.sh aleatorio & # fijo o aleatorio
 compton &
 redshift &
 dunst &
-#$HOME/descargas/dwmblocks-master/dwmblocks & #no clickable
 dwmblocks & #clickable
 setxkbmap es -option caps:escape &
-# xmodmap ~/.config/x11/es_set &
-#xmodmap -e "remove Lock = Caps_Lock" -e "keycode 66 = Escape" &
 xrdb ~/.config/x11/xresources &
 $HOME/descargas/build/xbanish-master/xbanish &
 # aumenta velocidad de scrolling
@@ -24,18 +21,13 @@ xset r rate 300 50 &
 #probando while loop para relanzar dwm
 case "$(tty)" in
 	"/dev/tty1") while :; do
-		#dwm 
-		#$HOME/scripts/dwm-6.2-prueba-luke-blocks/dwm
-		#dwm1
-		#$HOME/dwm-scratch/dwm-6.2/dwm
-		$HOME/dwm-scratch-copia/dwm-6.2/dwm
+		$(cat ~/.local/share/desktop)
 	done
 	;;
 	"/dev/tty2") exec bspwm ;;
-	"/dev/tty3") case "$(printf dwm\\nbspwm\\njwm\\n |fzf --cycle --prompt='gestores de vebtanas: ')" in
+	"/dev/tty3") case "$(printf "dwm\\nbspwm\\njwm\\n" |fzf --cycle --prompt='gestores de vebtanas: ')" in
 			dwm) while :; do
 				dwm1
-				#dwm
 			done
 			;;
 			bspwm) exec bspwm;;
@@ -44,4 +36,3 @@ case "$(tty)" in
 	;;
 	#"/dev/tty4") exec /usr/bin/jwm -f ~/.config/jwm/jwmrc;;
 esac
-#exec dwm

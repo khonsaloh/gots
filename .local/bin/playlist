@@ -1,7 +1,5 @@
 #!/bin/sh
 
-notify-send "reproducciendo lista" -i /usr/share/icons/papir*/48x48/apps/kubeplayer.png
+notify-send "▶️ reproducciendo lista"
 mpv --really-quiet --profile=playlist --user-agent="Mozilla/5.0 (X11; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0" \
 	'--ytdl-format=bestvideo[height<=?480]+bestaudio/best' --playlist=/tmp/lista_reproduccion.txt &
-
-

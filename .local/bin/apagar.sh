@@ -39,7 +39,7 @@ programado(){
 		nuevo=$(echo "$apagar" | sed 's/.$//g')
 		nueva=$(echo "$nuevo" | sed 's/://g')
 		to=$(date +%Y%m%d"$nueva")
-		notify-send "el equipo se apagara a las $nuevo" -i /usr/share/icons/papir*/48x48/apps/gnome-shutdown.png
+		notify-send "el equipo se apagara a las $nuevo"
 		while true; do
 			da=$(date +%Y%m%d%H%M%S) 
 			if [ "$da" -gt "$to" ]; then
@@ -51,7 +51,7 @@ programado(){
 		*p)
 		nuevo=$(echo "$apagar" | sed 's/.$//g')
 		nueva=$(echo "$nuevo" | sed 's/://g')
-		notify-send "el equipo se apagara a las $nuevo" -i /usr/share/icons/papir*/48x48/apps/gnome-shutdown.png
+		notify-send "el equipo se apagara a las $nuevo"
 		to=$(date +%Y%m%d"$nueva")
 		while true; do
 			da=$(date +%Y%m%d%H%M%S) 

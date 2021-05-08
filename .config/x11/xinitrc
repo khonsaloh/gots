@@ -17,7 +17,6 @@ $HOME/descargas/build/xbanish-master/xbanish &
 # aumenta velocidad de scrolling
 xset r rate 300 50 &
 
-#probando while loop para relanzar dwm
 while :; do
 	grep dwm ~/.local/share/desktop && dwmblocks &
 	$(cat ~/.local/share/desktop)

@@ -16,9 +16,8 @@ pidof -q dwm && desk=dwm
 
 [ $desk = "bspwm" ] && killall -q sxhkd && killall -q polybar && killall -q tail && killall -q xob
 case $a in
-	dwm-prev) echo ~/dwm-scratch/dwm-6.2/dwm > $file && pkill $desk \
-		&& dwmblocks &;; # por alguna razon se carga a dwmblocks y hay que relanzarlo
-	dwm) echo ~/dwm-scratch-copia/dwm-6.2/dwm > $file && pkill $desk && dwmblocks &;;
+	dwm-prev) echo ~/dwm-scratch/dwm-6.2/dwm > $file && pkill $desk ;; # por alguna razon se carga a dwmblocks y hay que relanzarlo
+	dwm) echo ~/dwm-scratch-copia/dwm-6.2/dwm > $file && pkill $desk;;
 	dwm-prueba) echo ~/scripts/dwm-6.2-prueba/dwm > $file && pkill $desk;;
 	dwm-look) echo ~/descargas/build/dwm-master/dwm > $file && pkill $desk;;
 	bspwm) echo bspwm > $file && pkill $desk;;

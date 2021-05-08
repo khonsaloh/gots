@@ -3,14 +3,9 @@
 export HISTFILE=~/.cache/zsh/history
 source ~/.config/shell/profile
 
-[ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ] && startx "$HOME/.config/x11/xinitrc" 
-#[ -z "$(pidof Xorg)" ] && [[ "$(tty)" == "/dev/tty1" ]] && startx "$HOME/.config/x11/xinitrc" 
-[ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty2" ] && startx "$HOME/.config/x11/xinitrc" 
-#[ -z "$(pidof Xorg)" ] && [[ "$(tty)" == "/dev/tty3" ]] && startx "$HOME/.config/.xinitrc" 
-[ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty4" ] && startx "$HOME/.config/x11/xinitrc" 
-#[ -z "$(pidof lightdm)" ] && [[ "$(tty)" == "/dev/tty1" ]] &&
-#	case "$(pidof lightdm)" in
-#		&& startx /usr/bin/bspwm;; 
-#		&& startx /usr/bin/jwm ;;
-#		*) && startx "$HOME/.config/.xinitrc" ;;
-#	esac
+[ -z "$(pidof Xorg)" ] && [ "$(tty)" = "/dev/tty1" ] && startx "$HOME/.config/x11/xinitrc" 
+[ -z "$(pidof Xorg)" ] && [ "$(tty)" = "/dev/tty2" ] \
+	&& case "$(printf "dwm\\nbspwm\\n" | fzf --prompt 'elige escritorio: ')" in
+		dwm) startx "$HOME/.config/x11/xinitrc";;
+		bspwm) startx "$HOME/.config/x11/xinitrc3";;
+	esac

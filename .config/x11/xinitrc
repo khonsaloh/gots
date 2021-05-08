@@ -17,22 +17,7 @@ $HOME/descargas/build/xbanish-master/xbanish &
 # aumenta velocidad de scrolling
 xset r rate 300 50 &
 
-
 #probando while loop para relanzar dwm
-case "$(tty)" in
-	"/dev/tty1") while :; do
-		$(cat ~/.local/share/desktop)
-	done
-	;;
-	"/dev/tty2") exec bspwm ;;
-	"/dev/tty3") case "$(printf "dwm\\nbspwm\\njwm\\n" |fzf --cycle --prompt='gestores de vebtanas: ')" in
-			dwm) while :; do
-				dwm1
-			done
-			;;
-			bspwm) exec bspwm;;
-			jwm) exec jwm;;
-		esac
-	;;
-	#"/dev/tty4") exec /usr/bin/jwm -f ~/.config/jwm/jwmrc;;
-esac
+while :; do
+	$(cat ~/.local/share/desktop)
+done

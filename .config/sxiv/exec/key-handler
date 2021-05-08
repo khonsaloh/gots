@@ -34,7 +34,7 @@ do
 			convert "$file" -strip -interlace Plane -quality 85% "$file.jpg" \
 				&& notify-send "generada imagen de peso reducido";;
 		"space")
-			file=$file && export file && $HOME/scripts/mag;;
+			file=$file && export file && $HOME/.local/bin/nopath/img;;
 		"i")
 			b=$(readlink -f "$file") && setsid -f st -e dash -c "identify -verbose $b | less";;
 	esac

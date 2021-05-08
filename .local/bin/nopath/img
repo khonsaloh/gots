@@ -1,0 +1,121 @@
+#!/bin/sh
+
+a=$(cat << EOF | dmenu -p 'elige opcion: ' -l 20
+cambiar tamaño
+pasar a blanco y negro
+efecto pintura
+anadir blur general
+añadir efecto carboncillo-boceto
+cambiar brillo de imagen
+efecto espejo-flop
+crear composicion varias imagenes
+añadir marco o borde a la imagen
+crear negativo
+aplicar efecto viñeta
+rotar imagen
+EOF
+)
+case $a in
+	"añadir efecto carboncillo-boceto")
+		while true; do
+			carboncillo () {
+				a=$(printf "" | dmenu -p 'pon valor numerico: ') \
+					&& convert -charcoal $a $file /tmp/$file && display /tmp/$file
+				}
+			carboncillo && check="$(printf "n\\ns" | dmenu -i -p 'aplicar cambios?: ')"
+			case $check in
+				s) cp /tmp/$file $file.jpg && exit;;
+				n) continue ;;
+				*) exit ;;
+			esac
+		done
+		;;
+	"efecto pintura")
+		while true; do
+			pintura () {
+				a=$(printf "" | dmenu -p 'elige valor para pintura: ' ) \
+					&& convert -paint $a $file /tmp/$file && display /tmp/$file
+			}
+			pintura && check="$(printf "n\\ns" | dmenu -i -p 'aplicar cambios?: ')"
+			case $check in
+				s) cp /tmp/$file $file.jpg && exit;;
+				n) continue ;;
+				*) exit ;;
+			esac
+		done
+		;;
+	"añadir marco o borde a la imagen")
+		while true; do
+			borde () {
+				a=$(printf "" | dmenu -p 'elige color para el borde: ' ) \
+					&& b=$(printf "" | dmenu -p 'elige grosor en pixeles: ') \
+					&& display -bordercolor $a -border $b $file
+			}
+			borde && check="$(printf "n\\ns" | dmenu -i -p 'aplicar cambios?: ')"
+			case $check in
+				"s") convert $file -bordercolor $a -border $b $file.jpg && exit;;
+				n) continue ;;
+				*) exit ;;
+			esac
+		done
+		;;
+	"pasar a blanco y negro")
+			monocromo () {
+				display -colorspace Gray $file
+			}
+		monocromo && [ "$(printf "n\\ns" | dmenu -i -p 'aplicar cambios?: ')" = "s" ] \
+			&&  convert -colorspace Gray $file $file.jpg && exit
+		;;
+	"crear negativo")
+		negativo () {
+			display -negate $file
+		}
+		negativo && [ "$(printf "n\\ns" | dmenu -i -p 'aplicar cambios?: ')" = "s" ] \
+			&& convert -negate $file $file.jpg;;
+	"cambiar brillo de imagen")
+		while true; do
+			brillo () {
+				a=$(printf "" | dmenu -p 'pon valor numerico _negativo para sacar brillo u oscurecer_: ') \
+					&& convert -brightness-contrast $a $file /tmp/$file && display /tmp/$file
+				}
+			brillo && check="$(printf "n\\ns" | dmenu -i -p 'aplicar cambios?: ')"
+			case $check in
+				"s") cp /tmp/$file $file,jpg && exit;;
+				n) continue ;;
+				*) exit ;;
+			esac
+		done ;;
+	"efecto espejo-flop")
+		espejo () {
+			display -flop "$file"
+		}
+		espejo && [ "$(printf "n\\ns" | dmenu -i -p 'aplicar cambios?: ')" = "s" ] \
+			&& convert -flop $file $file.jpg ;;
+	"aplicar efecto viñeta")
+		while true; do
+		vineta () {
+			a=$(printf "" | dmenu -p 'tamaño: ')
+			convert $file -background black -vignette $a /tmp/$file && display /tmp/$file
+		}
+		vineta && check="$(printf "n\\ns" | dmenu -i -p 'aplicar cambios?: ')"
+		case $check in
+			s) cp /tmp/$file $file.jpg && exit ;;
+			n) continue ;;
+			*) exit ;;
+		esac
+		done;;
+	"rotar imagen")
+		while true; do
+			rotar () {
+				a=$(printf "" | dmenu -p 'grados a rotar: ') \
+					&& display -rotate $a "$file"
+			}
+			rotar && check="$(printf "n\\ns" | dmenu -i -p 'aplicar cambios?: ')"
+			case $check in
+				s) convert $file -rotate $a $file.jpg && exit;;
+				n) continue ;;
+				*) exit;;
+			esac
+		done ;;
+esac
+

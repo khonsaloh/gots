@@ -10,7 +10,6 @@ fondo_escritorio.sh aleatorio & # fijo o aleatorio
 compton &
 redshift &
 dunst &
-#dwmblocks & #clickable
 setxkbmap es -option caps:escape &
 xrdb ~/.config/x11/xresources &
 $HOME/descargas/build/xbanish-master/xbanish &

@@ -1,15 +1,19 @@
 #!/bin/sh
 
 token=$(cat $XDG_CONFIG_HOME/apis/nasa)
+[ -z "$token" ] && token=DEMO_KEY
 downdir=/tmp/nasa
+app=wget
+#app=curl
+
 while [ -n "$1" ]; do
         case "$1" in
-        -h|--help) printf "-c para obtener imágenes de la curiosity, -o de la opportunity, -s de la spirit" ;;
+        -h|--help) printf '%s' "-c para obtener imágenes de la curiosity, -o de la opportunity, -s de la spirit" ;;
         -c)
                 #param="$2"
                 printf '%s' "pon fecha con formato americano (año-mes-día): " && read -r fecha
                 a=$(curl -4 -sf "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=$fecha&api_key=$token" | jq ".photos[].img_src")
-                printf "$a" | while read -r line
+                printf '%s' "$a" | while read -r line
                 do
                         wget "$(printf '%s\n' "$line" | tr -d '"')" -P $downdir
                 done
@@ -17,7 +21,7 @@ while [ -n "$1" ]; do
                 ;;
         -o)
                 a=$(curl -sf "https://api.nasa.gov/mars-photos/api/v1/rovers/opportunity/photos?sol=1000&api_key=$token" | jq ".photos[].img_src")
-                printf "$a" | while read -r line
+                printf '%s' "$a" | while read -r line
                 do
                         wget "$(printf '%s\n' "$line" | tr -d '"')" -P $downdir
                 done
@@ -25,13 +29,13 @@ while [ -n "$1" ]; do
                 ;;
          -s)
                 a=$(curl -sf "https://api.nasa.gov/mars-photos/api/v1/rovers/spirit/photos?sol=1000&api_key=$token" | jq ".photos[].img_src")
-                printf "$a" | while read -r line
+                printf '%s' "$a" | while read -r line
                 do
                         wget "$(printf '%s\n' "$line" | tr -d '"')" -P $downdir
                 done
                 shift
                 ;;
-        *) printf "-c para obtener imágenes de la curiosity, -o de la opportunity, -s de la spirit" ;;
+        *) printf '%s' "-c para obtener imágenes de la curiosity, -o de la opportunity, -s de la spirit" ;;
         esac
         shift
 done

@@ -17,4 +17,3 @@ else
 	[ -z "$c" ] && printf "${red}no coincide con 512\\n" || printf "${green}coincide con 512\\n"
 fi
 echo
-

@@ -1,20 +1,19 @@
 #!/bin/sh
 
 if [ -f "$1" ]; then
-	case $1 in
-	  *.gpg) gpg -d "$1";; #desncripta desde binario
-	  *.asc) gpg -d "$1";; #desencripta desde ascii
+	tipo="$(file -b --mime-type "$1" | rev| cut -d' ' -f1 | rev)"
+	case $tipo in
+	  application/pg*) gpg -d "$1";; #desncripta desde binario
 	  *) gpg -ca "$1";; # encripta
 	esac
 else
 	a=$(pwd)
-	b=$(find . -type f | fzf --cycle --height 15)
-        [ -z "$b" ] && exit 1	
-		case $b in
-	  		*.gpg) gpg -d "$a/$b";; #desncripta desde binario
-	 		 *.asc) gpg -d "$a/$b";; #desencripta desde ascii
+	b="$(file --mime-type * | grep 'application/pgp' | fzf)" \
+		&& name=$(echo "$b" | cut -d' ' -f1 | tr -d ':') \
+		&& tipo=$(echo "$b" | rev | cut -d' ' -f1|rev)
+	[ -z "$b" ] && exit
+		case $tipo in
+	  		application/pg*) gpg -d "$name";; #desncripta desde binario
 	  		*) gpg -ca "$a/$b";; # encripta
 		esac
-
 fi
-

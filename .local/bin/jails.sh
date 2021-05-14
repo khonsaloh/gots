@@ -3,7 +3,7 @@
 dir=/opt/jails
 
 # shell to use in the jail
-shell=dash
+shell=sh
 
 [ ! -d $dir ] && sudo mkdir -p $dir/bin/ && sudo mkdir -p "$dir"/lib/i386-linux-gnu/
 
@@ -34,6 +34,4 @@ for i in $lista; do
 	[ -e ${dir}${i} ] && continue || sudo cp -v "$i" "${dir}${i}"
 done
 
-
 [ -d "$dir" ] && sudo chroot "$dir" bin/$shell || exit 1
-

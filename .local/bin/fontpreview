@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-#
-# Siddharth Dushantha 2020
-#
 # Dependencies: sxiv, imagemagick, xdotool, fzf
 
 VERSION=1.0.7
@@ -44,14 +41,8 @@ optional arguments:
 }
 
 pre_exit() {
-    # Get the proccess ID of this script and kill it.
-    # We are dumping the output of kill to /dev/null
-    # because if the user quits sxiv before they
-    # exit this script, an error will be shown
-    # from kill and we dont want that
     kill -9 "$(cat "$PIDFILE" 2>/dev/null)" &> /dev/null
 
-    # Delete tempfiles, so we don't leave useless files behind.
     rm -rf "$FONTPREVIEW_DIR"
 }
 
@@ -76,10 +67,6 @@ main(){
         }
     done
 
-    # Checking for enviornment variables which the user might have set.
-    # This config file for fontpreview is pretty much the bashrc, zshrc, etc
-    # Majority of the variables in fontpreview can changed using the enviornment variables
-    # and this makes fontpreview very customizable
     [[ $FONTPREVIEW_SEARCH_PROMPT != "" ]] && SEARCH_PROMPT=$FONTPREVIEW_SEARCH_PROMPT
     [[ $FONTPREVIEW_SIZE != "" ]] && SIZE=$FONTPREVIEW_SIZE
     [[ $FONTPREVIEW_POSITION != "" ]] && POSITION=$FONTPREVIEW_POSITION
@@ -216,13 +203,6 @@ while true; do
 done
 
 
-# Point a font file to fontpreview and it will preview it.
-# Example:
-#   $ fontpreview /path/to/fontFile.ttf
-#
-# This is useful because people can preview fonts which they have not
-# installed onto their system. So if they want to preview a font file that
-# is in their Downloads directory, then they can easily preview it.
 if [ -f "$font" ]; then
     generate_preview "$font" "$FONT_PREVIEW"
 	

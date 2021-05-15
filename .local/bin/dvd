@@ -1,11 +1,14 @@
 #!/bin/sh
 
-ison="$(sudo blkid | grep 'sr[0-9]')"
+#ison="$(sudo blkid | grep 'sr[0-9]')" #faster, less aggressive
+label="$(lsblk -po name,label)"
+ison="$(echo "$label" | awk '/sr[0-9]/ {print $2}' | grep '[^[:blank:]]')"
 [ -z "$ison" ] && notify-send "no hay ningún dvd insertado" && exit
-[ $(echo "$ison" | wc -l) -gt 1 ] \
-	&& dvd=$(echo "$ison" | dmenu -l 20 -p 'elige dvd a reproduccir: ' | cut -d ' ' -f1 | tr -d ':') \
-	&& [ -z "$dvd" ] && exit
-[ $(echo "$ison" | wc -l) -eq 1 ] && dvd=$(echo $ison | cut -d ' ' -f1 | tr -d ':') 
+if [ $(echo "$ison" | wc -l) -gt 1 ]; then
+	choice=$(echo "$ison" |dmenu -l 20 -p 'elige dvd a reproduccir: ')
+	[ -n "$choice" ] && dvd=$(echo "$label" | grep "$choice" | cut -d ' ' -f1) || exit
+fi
+[ $(echo "$ison" | wc -l) -eq 1 ] && dvd=$(echo "$label" | grep "$ison" | cut -d ' ' -f1) 
 notify-send "📀 reproduciendo dvd";
 a=$(xdo id) && xdo hide $a \
 	&& mpv --really-quiet dvd://0 --dvd-device=$dvd --alang=es,en && xdo show $a 

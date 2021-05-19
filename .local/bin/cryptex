@@ -57,17 +57,16 @@ case $clave in
 	"encriptar en una imagen") a=$(printf "%s$verde firma digital: ") && gpg --verify "$a";;
 	"desencriptar en directorio") a="$(file --mime-type * | grep 'application/pgp')" \
 		&& b="$(printf "$a" | fzf)" && [ -n "$b" ] \
-		&& name=$(echo "$b" |cut -d' ' -f1 |tr -d ':') && echo $name \
-		&& tipo=$(echo "$b" |rev | cut -d' ' -f1|rev) && echo $tipo \
+		&& name=$(echo "$b" |cut -d' ' -f1 |tr -d ':') \
+		&& tipo=$(echo "$b" |rev | cut -d' ' -f1|rev) \
 		&& [ -z "$b" ] && exit
 		case $tipo in
-			application/pg*) echo hola && gpg -d "$name" ;;
+			application/pg*) gpg -d "$name" ;;
 		esac
 		;;
 esac
 
 #encriptar para destinatario
-#gpg --list-keys
 #a=$(gpg -k | awk '/pub/{getline; print}' | sed '1d' | fzf --cycle --height=15)
 #gpg -v -a -o mensaje.cifrado --encrypt --recipient $a archivo_a_cifrar 
 #gpg --fingerprint
@@ -76,7 +75,6 @@ esac
 #gpg --encrypt -a -r gonzalo@gmail.com hola
 
 #firmar archivo
-#gpg --list-keys
 #printf "usuario local"
 #a=$(gpg -k | awk '/pub/{getline; print}' | sed '1d' | fzf --cycle --height=15)
 #printf "usuario destinatario"
@@ -86,11 +84,9 @@ esac
 #firmar
 #gpg --clearsign archivo_a_firmar
 
-#gpg --list-keys
 #a=$(gpg -k | awk '/pub/{getline; print}' | sed '1d' | fzf --cycle --height=15)
 #gpg --send-keys --keyserver pgp.rediris.es $a
 
-#gpg --list-keys
 #a=$(gpg -k | awk '/pub/{getline; print}' | sed '1d' | fzf --cycle --height=15)
 #gpg --key-server pgp.rediris.es --search-keys $a 
 

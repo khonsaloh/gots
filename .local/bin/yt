@@ -20,11 +20,13 @@ vid=$(cat << EOF | fzf --prompt='elige opcion: '
 ver formatos en servidor
 descargar miniatura
 descargar video
-descargar por defecto (720 o 360)
+descargar por defecto mejor resolucion
 descargar parte de video
 descargar parte de video sin audio
 descargar parte de audio
-descargar lista reproduccion
+descargar lista de reproduccion
+descargar lista de reproduccion (solo audio)
+descargar lista de reproduccion avanzado
 descargar metadatos (json)
 descargar audio solo
 EOF
@@ -37,7 +39,7 @@ case $vid in
 		|cut -d' ' -f1)" && [ -z "$formato" ] && exit || [ $(echo $formato | wc -w) -eq 1 ] \
 		&& youtube-dl -4 -f $formato $url && exit || formato=$(printf "$formato" | paste -d' ' - - | tr ' ' '+') \
 		&& youtube-dl -4 -f $formato $url && notify-send "video descargado en $dir" && exit;;
-	"descargar por defecto (720 o 360)") youtube-dl "$url";;
+	"descargar por defecto mejor resolucion") youtube-dl "$url";;
 	" ") youtube-dl -g "$url" | awk '{ if(NR==1) print $0 }' | sed "s/^/'/;s/$/'/" |xargs -I {} ffmpeg -i "{}" \
 		-c:v copy -ss 0 -t 10 pruebar.mp4;;
 		"descargar parte de video") formato=$(youtube-dl -F "$url" | tail -n +4 |fzf --tac -m --prompt="elige formatos: " | cut -d' ' -f1) \
@@ -50,17 +52,19 @@ case $vid in
 				-c:v libx264 -ss $inicio -to $fin /tmp/$tiempo.mkv;;
 			*) formato=$(printf "$formato" | paste -d' ' - - | tr ' ' '+') && printf "desde donde quieres cortar (inicio)? " \
 				&& read -r inicio && printf "hasta donde quieres cortar? " \
-				&& read -r fin && youtube-dl -f "$formato" -g "$url"| 
-				awk '{ if(NR==1) print $0 }' | sed "s/^/'/;s/$/'/" | xargs -I {} ffmpeg -hide_banner -i "{}" \
-				-c:v libx264 -ss $inicio -to $fin /tmp/$tiempo.mkv;;
+				&& read -r fin && youtube-dl -f "$formato" -g "$url" | xargs -I {} ffmpeg -hide_banner -i "{}" \
+				-c:v libx264 -ss $inicio -to $fin /tmp/$tiempo.mkv;; # no funciona como es debido
 		esac;;
 	"descargar parte de audio") printf "comienzo: " && read -r com && printf "fin: " && read -r fin \
 		&& youtube-dl -g "$url" |awk '{ if(NR==2) print $0 }' | sed "s/^/'/;s/$/'/" | xargs -I {} ffmpeg \
 		-hide_banner -i "{}" -ss "$com" -to "$fin" $dir$tiempo.mp3;;
-	"7") youtube-dl -i $dir$tiempo"%(title)s.%(ext)s" "$url" ;;
-	"descargar metadatos") youtube-dl --write-info-json "$url";;
-	"descargar audio solo") youtube-dl -F "$url" | grep 'audio' && printf "pon codigo: " && read -r codigo \
-		&& youtube-dl -f "$codigo" "$url" \
+	#"descargar lista de reproduccion") youtube-dl -i $dir$tiempo"%(title)s.%(ext)s" "$url" ;;
+	"descargar lista de reproduccion") youtube-dl -i --yes-playlist "$url" ;;
+	"descargar lista de reproduccion avanzado") printf "descargasr rango de videos\\ndescargar videos concretos" | fzf && youtube-dl -i --yes-playlist "$url" ;;
+	"descargar lista de reproduccion (solo audio)") youtube-dl -extract-audio -i --yes-playlist "$url" ;;
+	"descargar metadatos (json)") youtube-dl --write-info-json "$url";;
+	"descargar audio solo") formato=$(youtube-dl -F "$url" |grep 'audio' | fzf --prompt='selecciona uno: ' | cut -d' ' -f1) \
+		&& [ -n "$formato" ] && youtube-dl -f "$formato" "$url" \
 		&& notify-send "video descargado en $dir";;
 esac
 echo

@@ -15,18 +15,19 @@ cat << EOF
 (10) editar clave
 (12) listar clave privada
 (13) verificar firma digital
+(14) detectar archivos encriptados
+(15) encriptar en una imagen
 
 EOF
 printf "opcion: " && read -r clave
-#echo "$clave"
 
 case $clave in
 	"1") gpg --full-generate-key;;
-	"2") a=$(find . | fzf --cycle --height=15) && [ -z "$a" ] && exit 1 || gpg --import "$a";;
+	"2") a=$(find . -maxdepth 1 | fzf --cycle --height=15) && [ -n "$a" ] && gpg --import "$a";;
 	"3") gpg --list-keys && a=$(gpg -k | awk '/pub/{getline; print}' | sed '1d' | fzf --cycle --height=15) \
 		&& gpg --delete-secret-keys "$a" && gpg --delete-keys "$a" && gpg -k;;
 	"4") gpg --list-keys && a=$(gpg -k | awk '/pub/{getline; print}' | sed '1d' | fzf --cycle --height=15) \
-		&& gpg -a --export -o practica.pub "$a";;
+		&& gpg -a --export -o k.pub "$a";;
 	"5") printf "%s$verde archivo a desencriptar: " && a=$(find . | fzf --cycle --height=15) \
 		&& gpg -o nuevo_archivo --decrypt "$a";;
 	"6") printf "%s$verde archivo a desencriptar: " && a=$(find . | fzf --cycle --reverse) && gpg --decrypt "$a";;
@@ -44,18 +45,14 @@ case $clave in
 	"13") a=$(printf "%s$verde firma digital: ") && gpg --verify "$a";;
 esac
 
-
-
 #encriptar para destinatario
 #gpg --list-keys
 #a=$(gpg -k | awk '/pub/{getline; print}' | sed '1d' | fzf --cycle --height=15)
 #gpg -v -a -o mensaje.cifrado --encrypt --recipient $a archivo_a_cifrar 
 #gpg --fingerprint
 
-
 #encriptar asimetrica para usuario destinatario
 #gpg --encrypt -a -r gonzalo@gmail.com hola
-
 
 #firmar archivo
 #gpg --list-keys
@@ -65,14 +62,12 @@ esac
 #b=$(gpg -k | awk '/pub/{getline; print}' | sed '1d' | fzf --cycle --height=15)
 #gpg -u $a --sign -o nuevo_archivo --encrypt -r $b archivo_a_firmar
 
-
 #firmar
 #gpg --clearsign archivo_a_firmar
 
 #gpg --list-keys
 #a=$(gpg -k | awk '/pub/{getline; print}' | sed '1d' | fzf --cycle --height=15)
 #gpg --send-keys --keyserver pgp.rediris.es $a
-
 
 #gpg --list-keys
 #a=$(gpg -k | awk '/pub/{getline; print}' | sed '1d' | fzf --cycle --height=15)

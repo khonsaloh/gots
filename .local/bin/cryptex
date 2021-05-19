@@ -11,7 +11,7 @@ fi
 [ -n "$1" ] && exit
 
 verde='\033[0;32m'
-clave=$(cat << EOF | fzf
+clave=$(cat << EOF | fzf --prompt='gestor criptográfico: '
 generar nueva clave
 importar clave
 eliminar claves privada-publica
@@ -19,30 +19,35 @@ exportar a clave publica
 desencriptar volcando a archivo
 desencriptar en directorio
 desencriptar sin volcado
-encriptar para otro usuario
+encriptar para otro usuario (asimetricamente)
+encriptar asimetricamente
 servidores de claves
 firmar digitalmente
 exportar clave privada
 editar clave
 listar claves privadas
 verificar firma digital
-(14) detectar archivos encriptados
 encriptar en una imagen
 encriptar simetricamente
+encriptar firmando digitalmente (asimetricamente)
 EOF
 )
 
 case $clave in
 	"generar nueva clave") gpg --full-generate-key;;
-	"importar clave") a=$(find . -maxdepth 1 | fzf --cycle --height=15) && [ -n "$a" ] && gpg --import "$a";;
-	"eliminar claves privada-publica") gpg --list-keys && a=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15) \
+	"importar clave") a="$(file * | grep -i pgp)" && [ "$a" -gt 1 ] \
+		&& b=$(echo $a | fzf --cycle --height=15) && [ -n "$b" ] \
+		&& gpg --import "$b" || echo 'no hay claves publicas en el presente directorio';;
+	"eliminar claves privada-publica") gpg --list-keys \
+		&& a=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15) \
 		&& gpg --delete-secret-keys "$a" && gpg --delete-keys "$a" && gpg -k;;
-	"exportar a clave publica") gpg --list-keys && a=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15) \
-		&& gpg -a --export -o k.pub "$a";;
+	"exportar a clave publica") gpg --list-keys \
+		&& a=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15) \
+		&& gpg -a --export -o $(echo "$a" | tr -d ' ').pub "$a";;
 	"desencriptar volcando a archivo") a=$(find . | fzf --cycle --height=15 --prompt='elige archivo: ') \
 		&& gpg -o "$a".des --decrypt "$a";;
 	"desencriptar sin volcado") a=$(find . -maxdepth 2 | fzf --cycle --reverse --prompt='archivo a desncriptar: ') && gpg --decrypt "$a";;
-	"encriptar para otro usuario") gpg --list-keys && printf "destinatario: " \
+	"encriptar para otro usuario (asimetricamente)"|"encriptar asimetricamente") gpg --list-keys && printf "destinatario: " \
 		&&  a=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15) \
 		&& printf "archivo a cifrar: " && b=$(find . -maxdepth 1 | fzf --cycle --height=15) \
 		&& gpg -v -a -o mensaje.cifrado --encrypt --recipient "$a" "$b";; 
@@ -58,11 +63,13 @@ case $clave in
 					;;
 			esac;;
 	"firmar digitalmente") a=$(find . -maxdepth 1 | fzf --cycle --height=15 --prompt='elige archivo a firmar: ') && gpg --clearsign "$a";;
-	"exportar clave privada") gpg --list-keys && a=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15) \
-		&& gpg -ao nueva.priv --export-secret-keys "$a";;
-	"11") gpg --list-keys && printf "usuario local" && a=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15) \
-		&& printf "usuario destinatario" && b=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15) \
-		&& printf "archivo a firmar: " && c=$(find . | fzf --cycle --height=15) && gpg -u "$a" --sign -o nuevo_archivo2 --encrypt -r "$b" "$c";;
+	"exportar clave privada") gpg --list-keys && a="$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15)" \
+		&& gpg -ao "$(echo "$a" | tr -d ' ')".priv --export-secret-keys "$a";;
+	"encriptar firmando digitalmente (asimetricamente)") gpg --list-keys \
+		&& a=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15 --prompt='usuario origen: ') \
+		&& b=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15 --prompt='usuario destinatario: ') \
+		&& c="$(find . | fzf --cycle --height=15 --prompt='archivo a firmar: ')" \
+		&& gpg -a -u "$a" --sign -o "$c.asc" --encrypt -r "$b" "$c";;
 	"listar claves privadas") gpg --list-secret-keys --keyid-format LONG;;
 	"verificar firma digital") a=$(printf "%s$verde firma digital: ") && gpg --verify "$a";;
 	"encriptar en una imagen") a=$(printf "%s$verde firma digital: ") && gpg --verify "$a";;
@@ -76,17 +83,5 @@ case $clave in
 		esac
 		;;
 	"editar clave") gpg --edit-key $(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15);;
-	"encriptar simetricamente") gpg -ca $(find . -maxdepth 1);;
+	"encriptar simetricamente") gpg -ca "$(find . -maxdepth 1 | fzf)";;
 esac
-
-#encriptar asimetrica para usuario destinatario
-#gpg --encrypt -a -r gonzalo@gmail.com hola
-
-#firmar archivo
-#printf "usuario local"
-#a=$(gpg -k | awk '/pub/{getline; print}' | sed '1d' | fzf --cycle --height=15)
-#printf "usuario destinatario"
-#b=$(gpg -k | awk '/pub/{getline; print}' | sed '1d' | fzf --cycle --height=15)
-#gpg -u $a --sign -o nuevo_archivo --encrypt -r $b archivo_a_firmar
- 
-#gpg --list-secret-keys --keyid-format LONG

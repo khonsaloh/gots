@@ -1,12 +1,12 @@
 #!/bin/sh
 
 u_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
-echo "$1" | grep www.youtube.com/channel && yt=$(curl -s  $1 | $HOME/descargas/build/pup | grep RSS \
+echo "$1" | grep www.youtube.com/channel && yt=$(curl -s  "$1" | "$HOME"/descargas/build/pup | grep RSS \
 	| grep -Eo '(http|https)://[^"]+')
-[ -n "$yt" ] && printf "nombre: " && read nombre && echo "$yt \"~ $nombre\"" >> "${XDG_CONFIG_HOME}/newsboat/urls" && notify-send "entrada RSS añadida." \
+[ -n "$yt" ] && printf "nombre: " && read -r nombre && echo "$yt \"~ $nombre\"" >> "${XDG_CONFIG_HOME}/newsboat/urls" && notify-send "entrada RSS añadida." \
 	&& exit
 
-echo $1 | grep github.com && printf "nombre: " && read -r nombre \
+echo "$1" | grep github.com && printf "nombre: " && read -r nombre \
 	&& echo "$1.atom \"~ $nombre\""  >> "${XDG_CONFIG_HOME}/newsboat/urls" \
 	&& notify-send "entrada RSS añadida." && exit
 

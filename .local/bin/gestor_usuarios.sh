@@ -26,7 +26,7 @@ case $indice in
 	"7") a=$(cut -d':' -f1 /etc/passwd | fzf --cycle --height=40) \
 		&& echo 'a que grupo lo quieres añadir? ' && b=$(awk -F':' '{print $1}' /etc/group | fzf) && sudo usermod -g "$b" "$a";;
 	"8") echo 'nombre del usuario a eliminar del grupo: ' && read -r usuario  \
-		&& a=$( grep $usuario /etc/group | sed 's/:.*//' | fzf --cycle --height=40) && echo 'de que grupo lo quieres eliminar?: ' \
+		&& a=$( grep "$usuario" /etc/group | sed 's/:.*//' | fzf --cycle --height=40) && echo 'de que grupo lo quieres eliminar?: ' \
 		&&  b=$(cut -d':' -f1 /etc/group | fzf --cycle --height=15) && sudo gpasswd -d "$a" "$b";;
 	"9") echo 'nombre del usuario a modificar la shell: ' \
 		&& a=$( grep 'root\|home' /etc/passwd | cut -d':' -f1 /etc/passwd | fzf --cycle --height=40) \

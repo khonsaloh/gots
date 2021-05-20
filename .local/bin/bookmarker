@@ -3,8 +3,8 @@
 urlfile=~/.local/share/base
 case $1 in
 	-a|-add) printf '%s' "pon nombre del marcador: " && read -r nombre \
-		&& printf '%s' "pon url: " && read -r url && printf "$nombre - $url" >> $urlfile;;
-	-d|-r) a="$(cat $urlfile | fzf --reverse --cycle --prompt='eliminar entrada: ' )" \
+		&& printf '%s' "pon url: " && read -r url && printf "%s" "$nombre - $url" >> $urlfile;;
+	-d|-r) a="$(fzf --reverse --cycle --prompt='eliminar entrada: ' < urlfile)" \
 		&& sed -i "/$a/d" $urlfile;;
 	-h|--help) printf "opciones son -add, -d\\n";;
 	-e|e) $EDITOR $urlfile ;;
@@ -18,4 +18,4 @@ engineurl=$(printf '%s\n' "$enginelist" | cut -d'-' -f2- |cut -c 2- |tr ' ' '+')
 #engineurl=$(printf '%s\n' "$enginelist" | awk '{$1=$2=""; print $0}' | cut -c 3- | tr ' ' '+')
 #echo $engineurl
 #exit
-pidof -q $BROWSER && $BROWSER "$engineurl" || setsid -f $BROWSER "$engineurl"
+pidof -q "$BROWSER" && "$BROWSER" "$engineurl" || setsid -f "$BROWSER" "$engineurl"

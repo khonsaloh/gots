@@ -5,8 +5,8 @@
 	*) tragar mpv "$1";;
 esac
 [ -n "$1" ] && exit 
-a=$(find *.flv *.webm *.webp *.wav *.opus *.avi *.mp4 *.mp3 *.ogg *.flac *.mpg *.mkv  -maxdepth 1 -type f 2>/dev/null) 
-[ -n "$a" ] && b=$(printf "$a" | fzf --cycle --reverse) && [ -n "$b" ] && 
+a=$(find -- *.flv *.webm *.webp *.wav *.opus *.avi *.mp4 *.mp3 *.ogg *.flac *.mpg *.mkv  -maxdepth 1 -type f 2>/dev/null) 
+[ -n "$a" ] && b=$(printf "%s" "$a" | fzf --cycle --reverse) && [ -n "$b" ] && 
 case $a in
 	*.mp3|*.opus|*.ogg|*.flac|*.webm|*.wav) /usr/bin/mpv "$b";;
 	*) tragar mpv "$b";;

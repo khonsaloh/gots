@@ -16,8 +16,8 @@ EOF
 case $op in
 	"eliminar archivos/carpetas") file="$(rclone tree $remoto | dmenu -i -l 20 -p 'elige archivo' | rev | cut -d' ' -f1|rev)" \
 		&& [ -n "$file" ] \
-		&& for i in "$file"; do
-			rclone purge $remoto/$i || rclone delete $remoto/$i 
+		&& for i in $file; do
+			rclone purge $remoto/$i || rclone delete $remoto/$i 2>/dev/null 
 		done ;;
 	"subir archivos") for i in $(find . -maxdepth 1 -printf '%P\n'|fzf -m --prompt='elige archivo: '); do
 		rclone copy $i $remoto

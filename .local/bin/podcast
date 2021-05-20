@@ -2,6 +2,6 @@
 
 folder=/tmp/lista_reproduccion.txt
 
-[ -n "$1" ] && mpv --no-video --playlist $1 ||
+[ -n "$1" ] && mpv --no-video --playlist "$1" ||
 	setsid notify-send "🎵 reproduciendo podcast en lista"  \
 	&& mpv --really-quiet '--ytdl-raw-options=force-ipv4=' --no-video --playlist=$folder &

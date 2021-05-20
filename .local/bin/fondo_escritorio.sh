@@ -4,8 +4,7 @@ waldir=/usr/share/wallpaper/
 case $1 in
 	"aleatorio") xwallpaper --zoom "$(find $waldir \
 		-maxdepth 1 -type f | shuf -n 1)" ;;
-		#&& pidof -q bspwm && bspc wm -r ;;
-	"fijo") xwallpaper --zoom "$(cat $HOME/.local/share/fondo.txt)" ;;
+	"fijo") xwallpaper --zoom "$(cat "$HOME"/.local/share/fondo.txt)" ;;
 esac
 
 [ -n "$1" ] && exit
@@ -27,7 +26,7 @@ case $fondo in
 	done &
 	;;
 	"3") a=$(find $waldir -maxdepth 1 -type f | fzf --cycle --reverse |
-		tee $HOME/.local/share/fondo.txt 1>/dev/null) && [ -n "$a" ] && pidof -q bspwm && bspc wm -r || exit;;
+		tee "$HOME"/.local/share/fondo.txt 1>/dev/null) && [ -n "$a" ] && pidof -q bspwm && bspc wm -r || exit;;
 esac
 
 #para rotacion cargada desde inicio añadir al archivo de configuracion del gestor de ventanas (p.ej openbox ) la linea 

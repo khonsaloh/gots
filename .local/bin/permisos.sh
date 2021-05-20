@@ -16,7 +16,7 @@ if [ -z "$1" ]; then
 		if [ "$permisos" = "p" ]; then
 			a=$( grep 'root\|home' /etc/passwd | cut -d':' -f1 | fzf --cycle --height=12 --prompt='cambiar a: ')
 			[ -z "$a" ] && exit
-			sudo chown $a:$a $c
+			sudo chown "$a":"$a" "$c"
 		else
 			sudo chmod -R "$permisos" "$c"
 		fi
@@ -34,7 +34,7 @@ else
 		if [ "$permisos" = "p" ]; then
 			a=$(grep 'root\|home' /etc/passwd | cut -d':' -f1 | fzf --cycle --height=12 --prompt='cambiar a: ')
 			[ -z "$a" ] && exit
-			sudo chown $a:$a "$1"
+			sudo chown "$a":"$a" "$1"
 		else
 			sudo chmod -R "$permisos" "$1"
 		fi

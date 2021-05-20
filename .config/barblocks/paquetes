@@ -1,7 +1,6 @@
 #!/bin/sh
 
 case $BLOCK_BUTTON in
-	1) setsid -f $TERMINAL -e dpkg -l
+	1) setsid -f "$TERMINAL" -e dpkg -l
 esac
-printf "📦$(dpkg --get-selections | grep -v deinstall | wc -l)"
-
+printf "%s" "📦$(dpkg --get-selections | grep -c -v deinstall)"

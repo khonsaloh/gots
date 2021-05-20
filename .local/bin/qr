@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #transferencia de contraseña wlan rapida generando codigo qr
-
+tiempo="$(date +%Y%m%d%H%M%S)"
 a=$(cat << EOF | dmenu -l 20 -p 'codigo qr: '
 codificar cadena de texto a qr
 codificar contraseña wifi
@@ -13,20 +13,20 @@ EOF
 )
 case $a in
 	'codificar cadena de texto a qr') printf '%s' 'pon cadena a encodear: ' && read -r cadena \
-		&& qrencode "$cadena" -o /tmp/$(date +%Y%m%d%H%M%S).png \
+		&& qrencode "$cadena" -o /tmp/"$tiempo".png \
 		&& notify-send "codigo qr generado en /tmp/" ;;
 	'codificar contraseña wifi') sudo awk '/wpa/' /etc/network/interfaces |
-		qrencode -o /tmp/$(date +%Y%m%d%H%M%S).png \
+		qrencode -o /tmp/"$tiempo".png \
 		&& notify-send "codigo qr generado en /tmp/" ;;
 	'escanear codigo qr con webcam')  zbarcam --raw ;;
-	'decodificar codigo qr') b="$(/usr/bin/find *.png *.jpg *jpeg -maxdepth 2 -type f 2>/dev/null | dmenu -l 20)" \
-		&& c="$(zbarimg -q --raw $b)" && echo "$c" && printf "volcar a archivo? (s para confirmar): " && read -r imagen \
+	'decodificar codigo qr') b="$(/usr/bin/find -- *.png *.jpg *jpeg -maxdepth 2 -type f 2>/dev/null | dmenu -l 20)" \
+		&& c="$(zbarimg -q --raw "$b")" && echo "$c" && printf "volcar a archivo? (s para confirmar): " && read -r imagen \
 		&& case $imagen in
 			s|y) echo "$c" > "$b".txt ;;
 		esac
 		;;
 	'codificar archivo a imagen') b="$(/usr/bin/find . ! -name '*.png' ! -name '*.jpg' ! -name '*.jpeg' -type f 2>/dev/null | dmenu -l 20)" \
-		&& qrencode -r "$b" -o /tmp/$(date +%Y%m%d%H%M%S).png \
+		&& qrencode -r "$b" -o /tmp/"$tiempo".png \
 		&& notify-send "codigo qr generado en /tmp/" ;;
 	'decodificar todos los codigos del directorio') for cousa in $(/usr/bin/find . -name '*.png' -type f 2>/dev/null); do
 			printf '\e[1;34m%-6s\e[m\n' "$cousa: " && zbarimg -q --raw "$cousa" 2>/dev/null

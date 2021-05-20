@@ -1,5 +1,5 @@
 #!/bin/sh
 
 #[ -n "$1" ] && curl -4sf cheat.sh/$@ | less -rc~X || curl -4sf cheat.sh
-[ -n "$1" ] && curl -4sf cheat.sh/$@ | less -FXr || curl -4sf cheat.sh
+[ -n "$1" ] && curl -4sf cheat.sh/"$*" | less -FXr || curl -4sf cheat.sh
 

@@ -4,4 +4,4 @@ case $BLOCK_BUTTON in
 	3) wireshark;;
 esac
 
-[ -z $(pidof dwm) ] && curl -4sf ipinfo.io | tr -d '"' || printf "📡"
+! pidof -q dwm && curl -4sf ipinfo.io | tr -d '"' || printf "📡"

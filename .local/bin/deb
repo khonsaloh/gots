@@ -16,6 +16,7 @@ ver archivos de un paquete deb
 purgar paquetes
 instalar deb forzando
 ver versiones displonibles de un paquete
+reinstalar paquete
 EOF
 )"
 
@@ -37,6 +38,8 @@ case $opcion in
 		&& echo $purga && [ "$(echo 's\nn' | dmenu -p 'quieres purgar? ' )" = 's' ] \
 		&& sudo apt purge $purga && exit || exit;;
 	"instalar deb forzando") dpkg --force-architecture -i $(find . -maxdepth 1 | fzf) ;; #forzar instalacion con arquitectura ajena
+	"reinstalar paquete") printf "paquete a reinstalar: " && read -r pac \
+		&& sudo apt-get install --reinstall $pac ;;
 	"ver versiones disponibles de un paquete") apt-cache madison ;; 
 	"instalar paquete deb") archivo="$(find . -maxdepth 1 | fzf)" && dpkg -I "$archivo" && [ "$(printf 's\nn' | dmenu -p 'queres instalalo? ' )" = 's' ] \
 	&& (sudo dpkg -i "$archivo" || sudo apt-get install -f) ;;

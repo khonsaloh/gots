@@ -1,6 +1,6 @@
 #!/bin/sh
 
-url=$(xclip -o)
+url=$(xclip -o 2>/dev/null)
 
 case $1 in
 	-e) $EDITOR $(readlink -f "$0") && exit ;;

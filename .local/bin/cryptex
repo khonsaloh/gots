@@ -4,7 +4,7 @@ if [ -f "$1" ]; then
 	tipo="$(file -b --mime-type "$1" | rev| cut -d' ' -f1 | rev)"
 	case $tipo in
 		application/pg*) gpg -d "$@" ;; #|| gpg ;;
-		*) [ "$(printf "s\nn"| dmenu -p 'encriptar simetricamente? ')"  = 's' ] \
+		*) [ "$(printf "s\\nn"| dmenu -p 'encriptar simetricamente? ')"  = 's' ] \
 			&& gpg -ca "$1";; #encriptacion simetrica
 	esac
 fi
@@ -12,9 +12,9 @@ fi
 
 verde='\033[0;32m'
 clave=$(cat << EOF | fzf --prompt='gestor criptográfico: '
-generar nueva clave
+generar nuevo par de llaves
 importar clave
-eliminar claves privada-publica
+eliminar par de llaves privada-publica
 exportar a clave publica
 desencriptar volcando a archivo
 desencriptar en directorio
@@ -30,15 +30,21 @@ verificar firma digital
 encriptar en una imagen
 encriptar simetricamente
 encriptar firmando digitalmente (asimetricamente)
+extraer archivo/mensaje de una imagen
+eliminar archivo de forma segura
 EOF
 )
 
 case $clave in
-	"generar nueva clave") gpg --full-generate-key;;
-	"importar clave") a="$(file * | grep -i pgp)" && [ "$a" -gt 1 ] \
-		&& b=$(echo $a | fzf --cycle --height=15) && [ -n "$b" ] \
-		&& gpg --import "$b" || echo 'no hay claves publicas en el presente directorio';;
-	"eliminar claves privada-publica") gpg --list-keys \
+	"generar nuevo par de llaves") gpg --full-generate-key;;
+	"importar clave") a="$(file . -- * | grep -i pgp)"
+		if [ -z "$a" ]; then
+			echo "no hay claves publicas en el presente directorio"
+		else 
+			b=$(echo "$a" | fzf --cycle --height=15 | cut -d':' -f1) && [ -n "$b" ] \
+				&& gpg --import "$b" 
+		fi ;;
+	"eliminar par de llaves privada-publica") gpg --list-keys \
 		&& a=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15) \
 		&& gpg --delete-secret-keys "$a" && gpg --delete-keys "$a" && gpg -k;;
 	"exportar a clave publica") gpg --list-keys \
@@ -51,13 +57,14 @@ case $clave in
 		&&  a=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15) \
 		&& printf "archivo a cifrar: " && b=$(find . -maxdepth 1 | fzf --cycle --height=15) \
 		&& gpg -v -a -o mensaje.cifrado --encrypt --recipient "$a" "$b";; 
-	"servidores de claves") keyserver="pgp.mit.edu" && a=$(printf "subir clave publica a servidor de claves\\nbuscar clave publica en servidor de claves\\ndescargar clave publica de servidor de claves\\n"|
+	"servidores de claves") keyserver="pgp.mit.edu" 
+		a=$(printf "subir clave publica a servidor de claves\\nbuscar clave publica en servidor de claves\\ndescargar clave publica de servidor de claves\\n"|
 		fzf --cycle --height=10)
 			case $a in
-				"subir clave publica a servidor de claves") echo $keyserver && gpg -k && gpg --send-keys --keyserver "$keyserver" \
+				"subir clave publica a servidor de claves") gpg -k && gpg --send-keys --keyserver "$keyserver" \
 					"$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15)";;
 				"buscar clave publica en servidor de claves") a="$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15)" \
-					&& gpg --keyserver "$keyserver" --search-keys $a 
+					&& gpg --keyserver "$keyserver" --search-keys "$a" 
 				       	;;
 				"descargar clave publica de servidor de claves") gpg --keyserver $keyserver --recv-keys id
 					;;
@@ -71,17 +78,24 @@ case $clave in
 		&& c="$(find . | fzf --cycle --height=15 --prompt='archivo a firmar: ')" \
 		&& gpg -a -u "$a" --sign -o "$c.asc" --encrypt -r "$b" "$c";;
 	"listar claves privadas") gpg --list-secret-keys --keyid-format LONG;;
-	"verificar firma digital") a=$(printf "%s$verde firma digital: ") && gpg --verify "$a";;
-	"encriptar en una imagen") a=$(printf "%s$verde firma digital: ") && gpg --verify "$a";;
-	"desencriptar en directorio") a="$(file --mime-type * | grep 'application/pgp')" \
-		&& b="$(printf "$a" | fzf)" && [ -n "$b" ] \
+	"verificar firma digital") gpg --verify "$(find . -maxdepth 1|fzf)";;
+	"encriptar en una imagen")  archivo=$(find . -maxdepth 2 | fzf --prompt='archivo a embeber: ') \
+		&& imagen=$(find . -maxdepth 3 -type f|fzf --prompt='imagen a usar: ') \
+		&& echo "pon contraseña " \
+		&& steghide embed -ef $archivo -cf $imagen ;; #a=$(printf "%s$verde firma digital: ")
+	"extraer archivo/mensaje de una imagen")  printf "pon imagen a extraer: " && read -r ext \
+		&& echo "mete contraseña " \
+		&& steghide extract -sf "$ext" -xf "$ext".unhided;;
+	"desencriptar en directorio") a="$(file --mime-type -- * | grep 'application/pgp')" \
+		&& b="$(printf "%s" "$a" | fzf)" && [ -n "$b" ] \
 		&& name=$(echo "$b" |cut -d' ' -f1 |tr -d ':') \
-		&& tipo=$(echo "$b" |rev | cut -d' ' -f1|rev) \
+		&& tipo="$(echo "$b" |rev | cut -d' ' -f1|rev)" \
 		&& [ -z "$b" ] && exit
 		case $tipo in
-			application/pg*) gpg -d "$name" || echo hola && gpg --symmetric --decrypt "$name" ;;
+			application/pg*) gpg -d "$name" || echo hola ;;
 		esac
 		;;
-	"editar clave") gpg --edit-key $(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15);;
+	"editar clave") gpg --edit-key "$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15)";;
 	"encriptar simetricamente") gpg -ca "$(find . -maxdepth 1 | fzf)";;
+	"eliminar archivo de forma segura") shred -u "$(find . -maxdepth 1 | fzf)";;
 esac

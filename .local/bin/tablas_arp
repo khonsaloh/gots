@@ -1,14 +1,14 @@
 #!/bin/sh
 
+case $1 in
+	-d) sudo arptables --flush && exit;; ## limpiar todo
+esac
 sudo arptables -nL --line-numbers
 
-broad=$(sudo ifconfig $(/usr/bin/ls /sys/class/net | grep '^wl') |
+broad=$(sudo ifconfig "$(/usr/bin/ls /sys/class/net | grep '^wl')" |
 	        grep broadcast|rev | cut -d' ' -f1 | rev | cut -d'.' -f1,2,3)
 
 # bloquear direccion (peticiones ping)
 for ip in $(seq 2 255); do
-	sudo arptables -A INPUT -s $broad.$ip -j DROP
+	sudo arptables -A INPUT -s "$broad"."$ip" -j DROP
 done
-## limpiar todo
-#arptables --flush
-

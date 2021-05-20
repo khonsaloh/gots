@@ -5,4 +5,4 @@ case $BLOCK_BUTTON in
 	1) setsid -f st -e htop ;;
 esac
 
-printf "🧠 $(free -h | awk '/Mem/ {print $3"/"$2}')"
+printf "%s" "🧠 $(free -h | awk '/Mem/ {print $3"/"$2}')"

@@ -16,7 +16,7 @@ tiempo=$(date +%Y%m%d%H%M%S)
 
 #select=fzf
 
-vid=$(fzf --prompt='gestor de descarga: ' << EOF
+vid=$(fzf --prompt='gestor de descarga: ' << GON
 ver formatos en servidor
 descargar miniatura
 descargar video
@@ -25,11 +25,9 @@ descargar parte de video
 descargar parte de video sin audio
 descargar parte de audio
 descargar lista de reproduccion
-descargar lista de reproduccion (solo audio)
-descargar lista de reproduccion avanzado
 descargar metadatos (json)
 descargar audio solo
-EOF
+GON
 )
 case $vid in
 	ver*) youtube-dl -F "$url";;
@@ -59,8 +57,18 @@ case $vid in
 		&& youtube-dl -g "$url" |awk '{ if(NR==2) print $0 }' | sed "s/^/'/;s/$/'/" | xargs -I {} ffmpeg \
 		-hide_banner -i "{}" -ss "$com" -to "$fin" $dir$tiempo.mp3;;
 	#"descargar lista de reproduccion") youtube-dl -i $dir$tiempo"%(title)s.%(ext)s" "$url" ;;
-	"descargar lista de reproduccion") youtube-dl -i --yes-playlist "$url" ;;
-	"descargar lista de reproduccion avanzado") printf "descargasr rango de videos\\ndescargar videos concretos" | fzf && youtube-dl -i --yes-playlist "$url" ;;
+	"descargar lista de reproduccion") lista="$(fzf <<- GON
+			descargar lista de reproduccion
+			descargar lista de reproduccion (solo audio)
+			descargar lista de reproduccion avanzado
+			GON
+			)"
+			case "$lista" in
+				"descargar lista de reproduccion (solo audio)") 
+					youtube-dl -extract-audio -i --yes-playlist "$url" ;;
+				"descargar lista de reproduccion") 
+					youtube-dl -i --yes-playlist "$url" ;;
+			esac ;;
 	"descargar lista de reproduccion (solo audio)") youtube-dl -extract-audio -i --yes-playlist "$url" ;;
 	"descargar metadatos (json)") youtube-dl --write-info-json "$url";;
 	"descargar audio solo") formato=$(youtube-dl -F "$url" |grep 'audio' | fzf --prompt='selecciona uno: ' | cut -d' ' -f1) \

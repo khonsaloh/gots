@@ -5,7 +5,7 @@ cat << EOF
 (1) apagar
 (2) programar apagado
 (3) reiniciar
-(4) cerrar sesion
+(4) salir a tty
 (5) cerrar sesion
 
 EOF
@@ -19,21 +19,21 @@ programado(){
 		p=$(echo "$apagar" | sed 's/.$//g')
 		while true; do
 			sleep "$p"
-			sudo persist-config --shutdown --command poweroff
+			sudo poweroff
 		done & ;;
 		*m)
 		j=$(echo "$apagar" | sed 's/.$//g') 
 		f=$(echo 60*"$j" | bc)
 		while true; do
 			sleep "$f"
-			sudo persist-config --shutdown --command poweroff
+			sudo poweroff
 		done & ;;
 		*h)
 		nuevo=$(echo "$apagar" | sed 's/.$//g') 
 		l=$(echo 60*60*"$nuevo" | bc) 
 		while true; do
 			sleep "$l"
-			sudo persist-config --shutdown --command poweroff
+			sudo poweroff
 		done & ;;
 		*e)
 		nuevo=$(echo "$apagar" | sed 's/.$//g')
@@ -43,7 +43,7 @@ programado(){
 		while true; do
 			da=$(date +%Y%m%d%H%M%S) 
 			if [ "$da" -gt "$to" ]; then
-				sudo persist-config --shutdown --command poweroff
+				sudo poweroff
 			else
 				sleep 600
 			fi
@@ -56,7 +56,7 @@ programado(){
 		while true; do
 			da=$(date +%Y%m%d%H%M%S) 
 			if [ "$da" -gt "$to" ]; then
-				sudo persist-config --shutdown --command poweroff
+				sudo poweroff
 			else
 				sleep 60
 			fi
@@ -68,7 +68,7 @@ case $opcion in
 	"1") sudo poweroff;;
 	"2") programado ;;
 	"3") sudo reboot ;;
-	"4") echo 'presiona control+alt+basckspace' ;;
-	"5") sudo shutdown -h "$1";;
+	"4") echo 'presiona control+alt+F[1-9]' ;;
+	"5") kill -9 -1 ;;
 esac
 

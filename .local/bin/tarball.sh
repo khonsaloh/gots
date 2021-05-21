@@ -8,7 +8,7 @@ cat << EOF
 (4) bz2
 
 EOF
-printf "por defecto crea tarball: " && read -r comp
+printf "por defecto crea tarball (tar.gz): " && read -r comp
 
 case $comp in
 	"1") zip -r "$1".zip "$1" ;;

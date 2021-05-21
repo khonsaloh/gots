@@ -58,16 +58,23 @@ case $vid in
 		-hide_banner -i "{}" -ss "$com" -to "$fin" $dir$tiempo.mp3;;
 	#"descargar lista de reproduccion") youtube-dl -i $dir$tiempo"%(title)s.%(ext)s" "$url" ;;
 	"descargar lista de reproduccion") lista="$(fzf <<- GON
-			descargar lista de reproduccion
-			descargar lista de reproduccion (solo audio)
-			descargar lista de reproduccion avanzado
+			descargar lista entera
+			descargar (solo audio)
+			elegir rango de videos
+			descargar videos concretos o salteados
 			GON
 			)"
 			case "$lista" in
-				"descargar lista de reproduccion (solo audio)") 
+				"descargar (solo audio)") 
 					youtube-dl -extract-audio -i --yes-playlist "$url" ;;
-				"descargar lista de reproduccion") 
+				"descargar lista entera") 
 					youtube-dl -i --yes-playlist "$url" ;;
+				"elegir rango de videos") 
+					printf "pon rango separado por - " && read -r indice \
+						&& youtube-dl -c -i --yes-playlist --playlist-items "$indice" "$url" ;;
+				"descargar videos concretos o salteados") 
+					printf "pon indices de la lista que quieres descargar separados por comas: " && read -r indice \
+						&& youtube-dl -c -i --yes-playlist --playlist-items "$indice" "$url" ;;
 			esac ;;
 	"descargar lista de reproduccion (solo audio)") youtube-dl -extract-audio -i --yes-playlist "$url" ;;
 	"descargar metadatos (json)") youtube-dl --write-info-json "$url";;

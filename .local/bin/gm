@@ -84,5 +84,5 @@ case $a in
 		&& git --git-dir=$gitdots --work-tree=$HOME remote | xargs -L1 git --git-dir=$gitdots --work-tree=$HOME push --force --all ;;
 		"renombrar rama (local)") old="$(git branch | fzf --prompt='rama a renombrar: ' )" && \
 			printf "nombre nuevo: " && read -r new && git branch -m "$old" "$new";;
-	"cambiar alias a remoto") git init --bare ;;
+	"cambiar alias a remoto") git -d ;;
 esac

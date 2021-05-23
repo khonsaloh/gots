@@ -15,8 +15,9 @@ comprobar
 ver archivos de un paquete deb
 purgar paquetes
 instalar deb forzando
-ver versiones displonibles de un paquete
+ver versiones disponibles de un paquete
 reinstalar paquete
+descargar paquete deb (sin instalar)
 EOF
 )"
 
@@ -31,8 +32,9 @@ case $opcion in
 		&& echo "$lista" && for i in "$lista";do
 			sudo dpkg -r $i
 		done	; exit;;
-	"purgar paquetes debian instalados localmente") lista="$(apt list --installed 2>/dev/null | grep ', local'| cut -d'/' -f1 | fzf -m)" \
-		&& sudo dpkg -P $lista ; exit;;
+	"purgar paquetes debian instalados localmente")
+		lista="$(apt list --installed 2>/dev/null | grep ', local'| cut -d'/' -f1 | fzf -m)" \
+			&& sudo dpkg -P $lista ; exit;;
 	"listar paquetes debian instalados localmente") apt list --installed 2>/dev/null | grep ', local' ; exit;;
 	"purgar paquetes") purga=$(dpkg --get-selections | awk '/deinstall/ {print $1}') \
 		&& echo $purga && [ "$(echo 's\nn' | dmenu -p 'quieres purgar? ' )" = 's' ] \
@@ -40,7 +42,15 @@ case $opcion in
 	"instalar deb forzando") dpkg --force-architecture -i $(find . -maxdepth 1 | fzf) ;; #forzar instalacion con arquitectura ajena
 	"reinstalar paquete") printf "paquete a reinstalar: " && read -r pac \
 		&& sudo apt-get install --reinstall $pac ;;
-	"ver versiones disponibles de un paquete") apt-cache madison ;; 
+	"ver versiones disponibles de un paquete")
+		printf "paquete: " && read -r pac && paquetes=$(apt-cache madison "$pac") \
+			&& [ -n "$paquetes" ] && paquete="$(echo "$paquetes" | dmenu -l 10 -p 'elige uno: ' | cut -d'|' -f2 | tr -d ' ')" \
+			&& sel=$(printf "instalar paquete\\ndescargar paquete\\n" | dmenu -l 30 -p 'que quieres hacer: ')
+			case $sel in
+				"instalar paquete") sudo apt install $pac=$paquete;;
+				"descargar paquete") apt download $pac=$paquete ;;
+			esac ;;
+	"descargar paquete deb (sin instalar)") printf "pon paquete: " && read -r pac && apt download "$pac" ;; 
 	"instalar paquete deb") archivo="$(find . -maxdepth 1 | fzf)" && dpkg -I "$archivo" && [ "$(printf 's\nn' | dmenu -p 'queres instalalo? ' )" = 's' ] \
 	&& (sudo dpkg -i "$archivo" || sudo apt-get install -f) ;;
 esac && exit

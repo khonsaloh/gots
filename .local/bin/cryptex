@@ -1,9 +1,9 @@
 #!/bin/sh
 
 if [ -f "$1" ]; then
-	tipo="$(file -b --mime-type "$1" | rev| cut -d' ' -f1 | rev)"
+	tipo="$(file -b --mime-type "$1" | grep 'application/pgp$' | rev| cut -d' ' -f1 | rev)"
 	case $tipo in
-		application/pg*) gpg -d "$@" ;; #|| gpg ;;
+		"application/pgp") gpg -d "$@" ;; #|| gpg ;;
 		*) [ "$(printf "s\\nn"| dmenu -p 'encriptar simetricamente? ')"  = 's' ] \
 			&& gpg -ca "$1";; #encriptacion simetrica
 	esac
@@ -11,6 +11,7 @@ fi
 [ -n "$1" ] && exit
 
 verde='\033[0;32m'
+nocolor='\e[0m'
 clave=$(fzf --prompt='gestor criptográfico: ' << GONZALO
 generar nuevo par de llaves
 importar clave
@@ -39,23 +40,30 @@ GONZALO
 
 case $clave in
 	"generar nuevo par de llaves") gpg --full-generate-key;;
-	"importar clave") a="$(file . -- * | grep -i pgp)"
+	"importar clave") a="$(file . -- * | grep 'Public-Key' | grep -v 'message')"
 		if [ -z "$a" ]; then
 			echo "no hay claves publicas en el presente directorio"
 		else 
-			b=$(echo "$a" | fzf --cycle --height=15 | cut -d':' -f1) && [ -n "$b" ] \
-				&& gpg --import "$b" 
+			for gonza in $(echo "$a" | fzf --cycle --height=15 -m | cut -d':' -f1); do
+				gpg --import "$gonza"
+			done
 		fi ;;
 	"eliminar par de llaves privada-publica") gpg --list-keys \
-		&& for i in $(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15 -m); do
-			gpg --delete-secret-and-public-key $i
+		&& for gon in $(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15 -m); do
+			gpg --delete-secret-and-public-key $gon
 		done && gpg -k;;
 	"exportar a clave publica") gpg --list-keys \
 		&& a=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15) \
 		&& gpg -a --export -o $(echo "$a" | tr -d ' ').pub "$a";;
-	"desencriptar volcando a archivo") a=$(find . | fzf --cycle --height=15 --prompt='elige archivo: ') \
-		&& gpg -o "$a".des --decrypt "$a";;
-	"desencriptar sin volcado") a=$(find . -maxdepth 2 | fzf --cycle --reverse --prompt='archivo a desncriptar: ') && gpg --decrypt "$a";;
+	"desencriptar volcando a archivo")
+		for gon in $(find . | fzf --cycle --height=15 --prompt='elige archivo: ' -m); do
+			printf '%b' "desencriptando ${verde}$gon${nocolor} \\n" \
+				&& gpg -o "$gon".desencriptado --decrypt "$gon"
+		done;;
+	"desencriptar sin volcado") archivo=$(file -- *  | grep -i 'PGP message') || exit
+		for gon in $(printf "$archivo" | fzf --cycle --reverse --prompt='archivo a desencriptar: ' -m | cut -d':' -f1); do
+			printf '%b' "desencriptando ${verde}$gon${nocolor} \\n" && gpg --decrypt "$gon"
+		done;;
 	"encriptar para otro usuario (asimetricamente)"|"encriptar asimetricamente") gpg --list-keys && printf "destinatario: " \
 		&&  a=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15) \
 		&& printf "archivo a cifrar: " && b=$(find . -maxdepth 1 | fzf --cycle --height=15) \
@@ -87,9 +95,12 @@ case $clave in
 						&& [ $(echo "s\\nn" | dmenu -p 'descargar?: ') = "s" ]) ;;
 			esac ;;
 	"firmar digitalmente")
-		a=$(find . -maxdepth 1 | fzf --cycle --height=15 --prompt='elige archivo a firmar: ') && gpg --clearsign "$a";;
-	"exportar clave privada") gpg --list-keys && a="$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15)" \
-		&& gpg -ao "$(echo "$a" | tr -d ' ')".priv --export-secret-keys "$a";;
+		for gon in $(find . -maxdepth 1 | fzf --cycle --height=15 --prompt='elige archivo a firmar: ' -m); do
+		       printf '%b' "firma para ${verde}$gon${nocolor} \\n" && gpg --clearsign "$gon"
+	       done;;
+	"exportar clave privada")
+		gpg --list-secret-keys && a="$(gpg --list-secret-keys | awk '/sec/{getline; print}' | fzf --cycle --height=15)" \
+			&& gpg -ao "$(echo "$a" | tr -d ' ')".priv --export-secret-keys "$a";;
 	"encriptar firmando digitalmente (asimetricamente)") gpg --list-keys \
 		&& a=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15 --prompt='usuario origen: ') \
 		&& b=$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15 --prompt='usuario destinatario: ') \
@@ -99,28 +110,49 @@ case $clave in
 		gpg --list-secret-keys --keyid-format LONG;;
 	"listar claves publicas")
 		gpg --list-public-keys --keyid-format LONG;;
-	"verificar firma digital") gpg --verify "$(find . -maxdepth 1|fzf)";;
-	"encriptar en una imagen") archivo="$(find . -maxdepth 2 | fzf --prompt='archivo a embeber: ')" \
-		&& imagen="$(find . -maxdepth 3 -type f|fzf --prompt='imagen a usar: ')" \
-		&& printf "%b" "${verde}pon contraseña \\n" \
-		&& steghide embed -ef "$archivo" -cf "$imagen" ;; #a=$(printf "%s$verde firma digital: ")
-	"extraer archivo/mensaje de una imagen")  printf "pon imagen a extraer: " && read -r ext \
-		&& echo "mete contraseña " \
-		&& steghide extract -sf "$ext" -xf "$ext".unhided;;
-	"desencriptar en directorio") a="$(file --mime-type -- * | grep 'application/pgp')" \
-		&& b="$(printf "%s" "$a" | fzf)" && [ -n "$b" ] \
+	"verificar firma digital")
+		for gonza in $(find . -maxdepth 1|fzf --prompt='elige archivo: ' -m); do
+			printf '%b' "firma para ${verde}$gonza${nocolor} \\n" && gpg --verify "$gonza"
+		done
+		;;
+	"encriptar en una imagen")
+		archivo="$(find . -maxdepth 2 | fzf --prompt='archivo a embeber: ')" \
+			&& imagen="$(file --mime-type -- *  | grep 'image/jpeg\|image/png' |fzf --prompt='imagen a usar: ')"
+					if [ -n "$(echo $imagen | grep 'image/jpeg')" ]; then
+						imagen="$(echo "$imagen" | cut -d':' -f1)" \
+							&& printf "%b" "${verde}pon contraseña \\n" \
+							&& steghide embed -ef "$archivo" -cf "$imagen"
+					else
+						imagen="$(echo "$imagen" | cut -d':' -f1)"
+						echo "$imagen"
+						convert $imagen $imagen.jpg \
+							&& printf "%b" "${verde}pon contraseña \\n" \
+							&& steghide embed -ef "$archivo" -cf "$imagen.jpg"
+					fi;; 
+	"extraer archivo/mensaje de una imagen")
+		for gon in $(file --mime-type -- * | grep 'image/jpeg' | fzf -m | cut -d':' -f1); do
+			printf '%b' "${verde}pon contraseña para desencriptar la imagen${nocolor} \\n" \
+				&& steghide extract -sf "$gon" -xf "$gon".unhided
+		done;;
+	"desencriptar en directorio") a="$(file --mime-type -- * | grep 'application/pgp$')" \
+		&& b="$(printf "%s" "$a" | fzf -m)" && [ -n "$b" ] \
 		&& name=$(echo "$b" |cut -d' ' -f1 |tr -d ':') \
 		&& tipo="$(echo "$b" |rev | cut -d' ' -f1|rev)" \
 		&& [ -z "$b" ] && exit
 		case $tipo in
-			application/pg*) gpg -d "$name" || echo hola ;;
+			application/pg*) for gon in $name; do
+				printf '%b' "${verde}$gon${nocolor} \\n" && gpg -d "$gon" || echo fallo
+			done
 		esac
 		;;
 	"editar clave") gpg --edit-key "$(gpg -k | awk '/pub/{getline; print}' | tail -n +2 | fzf --cycle --height=15)";;
 	"encriptar simetricamente") for i in $(find . -maxdepth 1 | fzf -m ); do
 		gpg -ca "$i"
 	done;;
-	"eliminar archivo de forma segura") shred -u "$(find . -maxdepth 1 | fzf)";;
+	"eliminar archivo de forma segura")
+		for gon in $(find . -maxdepth 1 | fzf -m); do
+			shred -u "$gon"
+		done;;
 	"revocar clave") gpg -k && gpg --output revoke.asc --gen-revoke \
 		$(gpg --list-public-keys --with-colons | sed -ne '/^pub:/,/^fpr:/ { /^fpr:/ p }' | cut -d: -f10| fzf --height 15%) \
 		&& [ "$(echo "s\\nn"  | dmenu -p 'importala al anillo?: ' )" = 's' ] && gpg --import revoke.asc ;;

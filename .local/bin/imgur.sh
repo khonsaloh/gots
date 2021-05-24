@@ -2,6 +2,8 @@
 # API Key provided by Bart;
 # replace with your own or specify yours as IMGUR_CLIENT_ID envionment variable
 # to avoid limits
+[ -z "$1" ] && $HOME/.local/bin/nopath/imgur-screenshot && exit
+
 client_id="$(head -n 1 $HOME/.config/apis/imgur)"
 
 # Function to output usage instructions

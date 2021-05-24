@@ -1,5 +1,13 @@
 #!/bin/sh
 
+[ -n "$1" ] && while getopts ":ug" opt; do
+	case "$opt" in
+		u) clear && column /etc/passwd -t -s ":" && exit ;;
+		g) clear && column /etc/group -t -s ":" | less -R | column && exit ;;
+		*) echo "-u para usuarios\\n-g para grupos" && exit ;;
+	esac
+	done
+
 cat << EOF
 
 (1) crear nuevo usuario

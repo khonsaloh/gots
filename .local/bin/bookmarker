@@ -11,11 +11,19 @@ case $1 in
 esac
 
 [ -n "$1" ] && exit
-
+#delimiter='-'
 enginelist=$(grep -v '^#' $urlfile | dmenu -i -l 20 -sb '#898818' -p 'marcadores web:') || exit
-engineurl=$(printf '%s\n' "$enginelist" | cut -d'-' -f2- |cut -c 2- |tr ' ' '+')
+
+if [ -n "$(echo $enginelist | grep '-')" ]; then 
+	engineurl=$(printf '%s\n' "$enginelist" | cut -d'-' -f2- |cut -c 2- |tr ' ' '+') 
+	pidof -q "$BROWSER" && "$BROWSER" "$engineurl" || setsid -f "$BROWSER" "$engineurl"
+else
+	engineurl=$(printf '%s\n' "$enginelist" |tr ' ' '+') 
+	pidof -q "$BROWSER" && "$BROWSER" "https://www.google.com/search?q=$engineurl" \
+		|| setsid -f "$BROWSER" "https://www.google.com/search?q=$engineurl"
+	
+fi
 #printf '%s\n' "$enginelist" | grep -Eo '(http|https)://[^"]+' | tr ' ' '+' 
 #engineurl=$(printf '%s\n' "$enginelist" | awk '{$1=$2=""; print $0}' | cut -c 3- | tr ' ' '+')
 #echo $engineurl
 #exit
-pidof -q "$BROWSER" && "$BROWSER" "$engineurl" || setsid -f "$BROWSER" "$engineurl"

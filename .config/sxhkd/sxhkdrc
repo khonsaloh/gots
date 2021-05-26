@@ -11,6 +11,9 @@ Home
 	&& scrot --delay 2 $HOME/mm/$(date +%Y%m%d%H%M%S).png \
 	&& notify-send -t 2000 "captura guardada en mm"
 
+ctrl + Home
+	$HOME/scripts/dmenurecord
+
 # calculadora
 super + c
 	$HOME/.local/bin/nopath/calc
@@ -37,7 +40,7 @@ super + {_, shift} @space
 
 # navegadores
 super + {_, shift + } w
-	{firefox-esr, navegador}
+	{firefox-esr, links duckduckgo.com}
 
 #teclas de funcion
 

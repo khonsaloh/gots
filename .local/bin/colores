@@ -25,9 +25,10 @@ fcian
 fblanco
 EOF
 )
-
+action='xclip -r -sel clip'
+not="notify-send 'copiado al portapapeles'"
 case $a in
-	"rojo") echo 'rojo="\033[0;31m"' | xclip -r -sel clip && notify-send "copiado al portapapeles" ;;
+	"rojo") echo 'rojo="\033[0;31m"' | "$action" && "$not";;
 	"verde") echo 'verde="\033[0;32m"' | xclip -r -sel clip && notify-send "copiado al portapapeles" ;;
 	"nocolor") echo nc='\e[0m' | xclip -r -sel clip && notify-send "copiado al portapapeles" ;;
 	"Default") echo Default='\e[0;39m' | xclip -r -sel clip && notify-send "copiado al portapapeles";;

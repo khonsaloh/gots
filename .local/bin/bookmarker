@@ -1,29 +1,33 @@
 #!/bin/sh
 
 urlfile=~/.local/share/base
-case $1 in
+separator='-'
+default_se='https://www.google.com/search?q='
+#default_se='https://duckduckgo.com/?q='
+#default_se='https://www.startpage.com/do/dsearch?query='
+#default_se='https://www.bing.com/search?q='
+
+[ -n "$1" ] && case $1 in
 	-a|-add) printf '%s' "pon nombre del marcador: " && read -r nombre \
-		&& printf '%s' "pon url: " && read -r url && printf "%s" "$nombre - $url" >> $urlfile;;
-	-d|-r) a="$(fzf --reverse --cycle --prompt='eliminar entrada: ' < urlfile)" \
-		&& sed -i "/$a/d" $urlfile;;
-	-h|--help) printf "opciones son -add, -d\\n";;
-	-e|e) $EDITOR $urlfile ;;
+		&& printf '%s' "pon url: " && read -r url && echo "$nombre $separator $url" >> $urlfile;;
+	-d|-r) urls=$(fzf --cycle --reverse --prompt='eliminar entrada: ' -m < $urlfile) \
+		&& printf '%s\n' "$urls" | while IFS= read -r line
+		do
+			sed -i "/$line/d" "$urlfile" && notify-send "$line eliminada"
+		done;;
+	-e|e) "$EDITOR" "$urlfile" ;;
+	-h|--help|*) printf "opciones son:\\n-add\\n-d (delete entry)\\n-e (edit bookmark file)\\n";;
 esac
 
 [ -n "$1" ] && exit
-#delimiter='-'
-enginelist=$(grep -v '^#' $urlfile | dmenu -i -l 20 -sb '#898818' -p 'marcadores web:') || exit
 
-if [ -n "$(echo $enginelist | grep '-')" ]; then 
-	engineurl=$(printf '%s\n' "$enginelist" | cut -d'-' -f2- |cut -c 2- |tr ' ' '+') 
-	pidof -q "$BROWSER" && "$BROWSER" "$engineurl" || setsid -f "$BROWSER" "$engineurl"
+urls=$(grep -v '^#' $urlfile | dmenu -i -l 20 -sb '#898818' -p 'marcadores web:') || exit
+
+if [ -n "$(echo $urls | grep "$separator")" ]; then 
+	url=$(printf '%s\n' "$urls" | cut -d"$separator" -f2- |cut -c 2- |tr ' ' '+') 
+	pidof -q "$BROWSER" && "$BROWSER" "$url" || setsid -f "$BROWSER" "$url"
 else
-	engineurl=$(printf '%s\n' "$enginelist" |tr ' ' '+') 
-	pidof -q "$BROWSER" && "$BROWSER" "https://www.google.com/search?q=$engineurl" \
-		|| setsid -f "$BROWSER" "https://www.google.com/search?q=$engineurl"
-	
+	url=$(printf '%s\n' "$urls" |tr ' ' '+') 
+	pidof -q "$BROWSER" && "$BROWSER" "$default_se$url" \
+		|| setsid -f "$BROWSER" "$default_se$url"
 fi
-#printf '%s\n' "$enginelist" | grep -Eo '(http|https)://[^"]+' | tr ' ' '+' 
-#engineurl=$(printf '%s\n' "$enginelist" | awk '{$1=$2=""; print $0}' | cut -c 3- | tr ' ' '+')
-#echo $engineurl
-#exit

@@ -1,4 +1,0 @@
-#!/bin/sh
-
-/usr/bin/wget --hsts-file=~/.cache/wget-hsts -4 \
-	-q --show-progress "$@" || notify-send "no se ha podido descargar el archivo"

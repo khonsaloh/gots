@@ -8,7 +8,7 @@ case $1 in
 		while true; do
 			b="$(echo "$a" | dmenu -i -l 30 -sb '#661a1a' -p 'television española')"
 			[ -z "$b" ] && xdo show $vent && exit || /usr/bin/mpv --really-quiet \
-				--user-agent "$u_agent" "$b" 
+				--user-agent="$u_agent" "$b" 
 		done &
 		;; #individuales
 	
@@ -31,12 +31,12 @@ case $1 in
 		while true; do
 			c="$(echo "$b" | /usr/local/bin/dmenu -i -l 30 -p television  -sb '#7a998d' -nb '#262626' )"
 			[ -z "$c" ] && xdo show $vent && exit
-			/usr/bin/mpv --really-quiet --profile=playlist \
-				$opt --user-agent "$u_agent" "$c"
+			/usr/bin/mpv --profile=playlist \
+				$opt --user-agent="$u_agent" "$c"
 		done & 
 		;;
 	
-	--li|-li|li) /usr/bin/mpv --profile=playlist $opt --user-agent "$u_agent" \
+	--li|-li|li) /usr/bin/mpv --profile=playlist $opt --user-agent="$u_agent" \
 		$(curl -4 -sf  'https://www.tdtchannels.com/lists/tv.w3u' | jq '.groups[].stations[] | "\(.name) \(.url)"' |dmenu -i -l 30 -p television -sb '#661a1a' ) >/dev/null & ;;
 esac
 
@@ -46,5 +46,5 @@ a="$(curl -4 -sf https://iptv-org.github.io/iptv/channels.json | jq '.[] | "\(.n
 
 while true; do
 	b="$(echo "$a" | dmenu -i -l 30 -sb '#661a1a' -p 'canal' -fn 'Ubuntu Mono' | awk '{print $NF}')" && [ -z "$b" ] && exit
-	mpv --really-quiet --user-agent "$u_agent" $opt "$b" #>/dev/null 2>&1 #individuales
+	mpv --really-quiet --user-agent="$u_agent" $opt "$b" #>/dev/null 2>&1 #individuales
 done &

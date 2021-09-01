@@ -16,10 +16,26 @@ default_se='https://www.google.com/search?q='
 			sed -i "/$line/d" "$urlfile" && notify-send "$line eliminada"
 		done;;
 	-e|e) "$EDITOR" "$urlfile" ;;
-	-H) a="$(~/sqlite3_3.27.2-3+deb10u1_i386/usr/bin/sqlite3  ~/.mozilla/firefox/*.default-esr/places.sqlite \
-		'SELECT * FROM moz_places;' | tail -n 500 | $HOME/descargas/build/mi-dmenu/dmenu -l 20 -fn 'Noto Color Emoj')" && [ -n "$a" ] \
-		&& setsid -f "$BROWSER" $(echo $a| cut -d'|' -f2);;
-	-h|--help|*) printf "opciones son:\\n-add\\n-d (delete entry)\\n-e (edit bookmark file)\\n-H browser history search\\n";;
+	-H) proc=$(pidof $BROWSER)
+		if [ -z "$proc" ]; then
+			a="$($HOME/sqlite3_3.27.2-3+deb10u1_i386/usr/bin/sqlite3  ~/.mozilla/firefox/*.default-*/places.sqlite \
+				'SELECT * FROM moz_places;' | tail -n 500 | $HOME/descargas/build/mi-dmenu/dmenu -l 20 -fn 'Noto Color Emoj')" \
+				&& [ -n "$a" ] && setsid -f "$BROWSER" $(echo $a| cut -d'|' -f2)
+		else
+			if [ ! -f /tmp/places.sqlite ]; then
+				cp ~/.mozilla/firefox/*.default-*/places.sqlite /tmp/
+				a="$($HOME/sqlite3_3.27.2-3+deb10u1_i386/usr/bin/sqlite3 /tmp/places.sqlite \
+					'SELECT * FROM moz_places;' | tail -n 500 | $HOME/descargas/build/mi-dmenu/dmenu -l 20 -fn 'Noto Color Emoj')" && [ -n "$a" ] \
+					&& setsid -f "$BROWSER" $(echo $a| cut -d'|' -f2)
+			else
+				a="$($HOME/sqlite3_3.27.2-3+deb10u1_i386/usr/bin/sqlite3 /tmp/places.sqlite \
+					'SELECT * FROM moz_places;' | tail -n 500 | $HOME/descargas/build/mi-dmenu/dmenu -l 20 -fn 'Noto Color Emoj')" && [ -n "$a" ] \
+					&& setsid -f "$BROWSER" $(echo $a| cut -d'|' -f2)
+			fi
+		fi
+		;;
+	-b|--bak) bak="$HOME/bak/" && cp $urlfile $bak && notify-send "bakup nuevo en $bak" ;;
+	-h|--help|*) printf "opciones son:\\n-add\\n-d (delete entry)\\n-e (edit bookmark file)\\n-H browser history search\\n-b create a backup of bookmarks\\n";;
 esac
 
 [ -n "$1" ] && exit

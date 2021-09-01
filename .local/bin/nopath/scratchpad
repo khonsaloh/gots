@@ -3,7 +3,8 @@
 #a=$(xdotool search --class hola)
 a=$(xdo id -N hola)
 [ -z $a ] && setsid -f st -t 'scratchpad' -c hola 2>/dev/null \
-	&& sleep 0.1 && b=$(xdo id -N hola) && xdo move -x 300 -y 300 $b && xdotool getactivewindow windowsize 800 500 && exit
+	&& sleep 0.1 && b=$(xdo id -N hola) \
+	&& xdo move -x 300 -y 300 $b && xdotool getactivewindow windowsize 800 500 && exit
 #wmctrl -l | grep 'que-tal' >/dev/null && xdotool windowunmap $a || xdotool windowmap $a
 #wmctrl -l -x | grep 'que-tal' >/dev/null && xdo hide $a || xdo show $a
 xdotool search --onlyvisible --class 'hola' >/dev/null && xdo hide $a || xdo show $a

